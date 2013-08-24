@@ -1,0 +1,79 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.mcme.marozzo.animations.animations;
+
+import com.mcme.marozzo.animations.MCMEAnimations;
+import com.sk89q.worldedit.CuboidClipboard;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.EditSessionFactory;
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.schematic.MCEditSchematicFormat;
+import com.sk89q.worldedit.schematic.SchematicFormat;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bukkit.Location;
+
+/**
+ *
+ * @author Luca
+ */
+public class WELoader {
+
+    public static CuboidRegion loadBounds(String frameName, MCMEAnimation animation) {
+        SchematicFormat sf = MCEditSchematicFormat.MCEDIT;
+        try {
+            CuboidClipboard clip = sf.load(new File(MCMEAnimations.MCMEAnimationsInstance.getDataFolder() + File.separator + "schematics" + File.separator + "animations" + File.separator + frameName + ".schematic"));
+
+            Vector v1 = new Vector(animation.origin.getX() + clip.getOffset().getX(), animation.origin.getY() + clip.getOffset().getY(), animation.origin.getZ() + clip.getOffset().getZ());
+            Vector v2 = new Vector(Math.floor(animation.origin.getX() + clip.getWidth() + clip.getOffset().getX() - 1),
+                    Math.floor(animation.origin.getY() + clip.getHeight() + clip.getOffset().getY() - 1),
+                    Math.floor(animation.origin.getZ() + clip.getLength() + clip.getOffset().getZ() - 1));
+
+            return new CuboidRegion(v1, v2);
+
+        } catch (IOException ex) {
+            Logger.getLogger(WELoader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DataException ex) {
+            Logger.getLogger(WELoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static boolean placeFrame(Location loc, CuboidClipboard clip, int localWorldIndex) {
+        EditSessionFactory esf = new EditSessionFactory();
+        EditSession es = esf.getEditSession(MCMEAnimations.WEPlugin.getServerInterface().getWorlds().get(localWorldIndex), 65535);
+
+        try {
+//            clip.place(es, BukkitUtil.toVector(loc), false);
+            clip.paste(es, BukkitUtil.toVector(loc), false);
+            es.flushQueue();
+            return true;
+        } catch (MaxChangedBlocksException ex) {
+            Logger.getLogger(WELoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public static CuboidClipboard loadFrame(String frameName) {
+
+        try {
+            SchematicFormat sf = MCEditSchematicFormat.MCEDIT;
+            CuboidClipboard clip = sf.load(new File(MCMEAnimations.MCMEAnimationsInstance.getDataFolder() + File.separator + "schematics" + File.separator + "animations" + File.separator + frameName + ".schematic"));
+            return clip;
+        } catch (DataException ex) {
+            Logger.getLogger(WELoader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(WELoader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+}
