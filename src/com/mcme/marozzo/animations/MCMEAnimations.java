@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.plaf.basic.BasicSliderUI.ActionScroller;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -51,11 +50,8 @@ public class MCMEAnimations extends JavaPlugin {
         MCMEAnimationsInstance = this;
         final PluginManager pm = getServer().getPluginManager();
 
-        final Plugin plugin = getServer().getPluginManager().getPlugin("WorldEdit");
-        if (plugin == null || !(plugin instanceof WorldEditPlugin)) {
-            WEPlugin = null;
-        }
-        WEPlugin = (WorldEditPlugin) plugin;
+        final Plugin WEplugin = getServer().getPluginManager().getPlugin("WorldEdit");
+        WEPlugin = (WorldEditPlugin) WEplugin;
 
         getCommand("anim").setExecutor(new AnimationCommands());
         getCommand("manage").setExecutor(new AnimationManager());
@@ -65,6 +61,7 @@ public class MCMEAnimations extends JavaPlugin {
         PluginDescriptionFile pdfFile = this.getDescription();
         getLogger().info(pdfFile.getName() + " version " + pdfFile.getVersion() + "is enabled!");
 
+        final Plugin plugin = this;
         getServer().getScheduler().runTaskLater(this, new Runnable(){
 
             public void run() {
