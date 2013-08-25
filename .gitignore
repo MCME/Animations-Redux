@@ -1,4 +1,15 @@
 #################
+## NetBeans
+#################
+
+nbproject/
+build/
+test/
+dist/
+build.xml
+manifest.mf
+
+#################
 ## Eclipse
 #################
 
