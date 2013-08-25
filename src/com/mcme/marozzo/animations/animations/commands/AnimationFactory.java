@@ -7,6 +7,7 @@ package com.mcme.marozzo.animations.animations.commands;
 import com.mcme.marozzo.animations.AnimationAction;
 import com.mcme.marozzo.animations.AnimationTrigger;
 import com.mcme.marozzo.animations.MCMEAnimations;
+import com.mcme.marozzo.animations.actions.ChainAnimationAction;
 import com.mcme.marozzo.animations.actions.ExplosionAction;
 import com.mcme.marozzo.animations.actions.MovePlayersAction;
 import com.mcme.marozzo.animations.animations.MCMEAnimation.animationType;
@@ -169,6 +170,9 @@ public class AnimationFactory {
         if (actionType.equals("move-players")) {
             a = new MovePlayersAction(null, -1);
         }
+        if (actionType.equals("chain-animation")) {
+            a = new ChainAnimationAction(null, -1, "");
+        }
         if (null == a) {
             p.sendMessage(ChatColor.RED + "Could not create action! Available actions: <explosion|move-players>");
             return;
@@ -193,6 +197,20 @@ public class AnimationFactory {
             p.sendMessage(ChatColor.BLUE + "Action frame set.");
         } catch (Exception ex) {
             p.sendMessage(ChatColor.RED + "Could not set activation frame for action at index #" + String.valueOf(actionIndex) + "!");
+        }
+    }
+
+    public static void setActionTarget(Player p, int actionIndex, String target) {
+        try {
+            AnimationAction a = actions.get(actionIndex);
+            if (a instanceof ChainAnimationAction) {
+                ((ChainAnimationAction) a).setTarget(target);
+                p.sendMessage(ChatColor.BLUE + "Action target set.");
+            } else {
+                p.sendMessage(ChatColor.RED + "Action #" + String.valueOf(actionIndex) + " is not a Chain_Animation action.");
+            }
+        } catch (Exception ex) {
+            p.sendMessage(ChatColor.RED + "Could not set target animation for action at index #" + String.valueOf(actionIndex) + "!");
         }
     }
 
@@ -411,17 +429,17 @@ public class AnimationFactory {
         p.sendMessage(ChatColor.BLUE + "Animation name set to " + name);
     }
 
-    public static void setAnimationDescription(Player p, String[] allArguments){
-        if(allArguments.length>1){
-           String des = "";
-           for(int i=1; i<allArguments.length; i++){
-               des+=" "+allArguments[i];
-           }
-           des = des.trim();
-           animationDescription = des;
-           p.sendMessage(ChatColor.BLUE + "Animation description stored.");
-        }else{
-           p.sendMessage(ChatColor.RED + "Animation description is empty!");
+    public static void setAnimationDescription(Player p, String[] allArguments) {
+        if (allArguments.length > 1) {
+            String des = "";
+            for (int i = 1; i < allArguments.length; i++) {
+                des += " " + allArguments[i];
+            }
+            des = des.trim();
+            animationDescription = des;
+            p.sendMessage(ChatColor.BLUE + "Animation description stored.");
+        } else {
+            p.sendMessage(ChatColor.RED + "Animation description is empty!");
         }
     }
 
@@ -529,13 +547,15 @@ public class AnimationFactory {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "----==== CURRENT ANIMATION INFO ===---");
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "Owner:" + ChatColor.RESET + "" + ChatColor.AQUA + owner.getDisplayName());
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "Name:" + ChatColor.RESET + "" + ChatColor.AQUA + animationName);
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "Description:" + ChatColor.RESET + "" + ChatColor.AQUA + animationDescription);
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "Origin:" + ChatColor.RESET + "" + ChatColor.AQUA + origin);
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "Type:" + ChatColor.RESET + "" + ChatColor.AQUA + type);
         p.sendMessage("--------------------------------------");
-        //p.sendMessage(ChatColor.LIGHT_PURPLE+""+ChatColor.BOLD+"---------------FRAMES-----------------");
         listFrames(p);
         p.sendMessage("--------------------------------------");
         listTriggers(p);
+        p.sendMessage("--------------------------------------");
+        listActions(p);
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "----===============================---");
     }
 

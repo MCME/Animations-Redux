@@ -59,10 +59,10 @@ public class LoopAnimation extends MCMEAnimation {
                         Math.floor(origin.getY() + clip.getHeight()),
                         Math.floor(origin.getZ() + clip.getLength())));
 
-                virtual_direction.setX(previousMin.getX() - shape.getMinimumPoint().getX());
-                virtual_direction.setY(previousMin.getY() - shape.getMinimumPoint().getY());
-                virtual_direction.setZ(previousMin.getZ() - shape.getMinimumPoint().getZ());
-
+                virtual_direction = new Vector(
+                        previousMin.getX() - shape.getMinimumPoint().getX(),
+                        previousMin.getY() - shape.getMinimumPoint().getY(),
+                        previousMin.getZ() - shape.getMinimumPoint().getZ());
                 executeActions();
                 if (!shouldStop) {
                     currentFrame = currentFrame == frames.size() - 1 ? 0 : currentFrame + 1;
@@ -105,6 +105,7 @@ public class LoopAnimation extends MCMEAnimation {
         loadConfiguration();
         final MCMEAnimationFrame f = frames.get(0);
         shape = WELoader.loadBounds(schematicBaseName + File.separator + f.getFrameName(), this);
+        virtual_direction = new Vector(0, 0, 0);
     }
 
     @Override

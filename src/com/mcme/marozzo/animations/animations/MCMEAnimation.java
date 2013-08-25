@@ -6,6 +6,7 @@ package com.mcme.marozzo.animations.animations;
 
 import com.mcme.marozzo.animations.AnimationAction;
 import com.mcme.marozzo.animations.MCMEAnimations;
+import com.mcme.marozzo.animations.actions.ChainAnimationAction;
 import com.mcme.marozzo.animations.actions.ExplosionAction;
 import com.mcme.marozzo.animations.actions.MovePlayersAction;
 import com.mcme.marozzo.animations.triggers.AlwaysActiveTrigger;
@@ -56,6 +57,7 @@ public abstract class MCMEAnimation {
     protected String schematicBaseName;
     protected File configFile;
     protected String animationName;
+    protected String animationDescription;
     protected int localWorldIndex;
     protected JSONObject animationConfiguration;
     protected ArrayList<MCMEAnimationFrame> frames = new ArrayList<MCMEAnimationFrame>();
@@ -106,7 +108,7 @@ public abstract class MCMEAnimation {
         return animationConfiguration;
     }
 
-    public File getAnimationRoot(){
+    public File getAnimationRoot() {
         return configFile.getParentFile();
     }
 
@@ -115,7 +117,7 @@ public abstract class MCMEAnimation {
         Object obj = parser.parse(new FileReader(configFile));
         JSONObject conf = (JSONObject) obj;
         String animationType = (String) conf.get("type");
-        
+
         if (animationType.equals("one-time")) {
             OneTimeAnimation result = new OneTimeAnimation(configFile);
             return result;
@@ -154,6 +156,13 @@ public abstract class MCMEAnimation {
 
             JSONArray JSONOrigin = (JSONArray) animationConfiguration.get("origin");
             origin = new Location(MCMEAnimations.WEPlugin.getServer().getWorlds().get(0), (Long) JSONOrigin.get(0), (Long) JSONOrigin.get(1), (Long) JSONOrigin.get(2));
+
+            try {
+                animationDescription = (String) animationConfiguration.get("description");
+            } catch (Exception ex) {
+                //Failed to load description.
+                //Put in a try-catch block for backward compatibility
+            }
 
             loadTriggers();
 
@@ -208,6 +217,14 @@ public abstract class MCMEAnimation {
                     MovePlayersAction mpa = new MovePlayersAction(this, frame);
                     MCMEAnimations.actions.add(mpa);
 //                    }
+                }
+
+                actionType = (JSONObject) action.get("chain_animation");
+                if (null != actionType) {
+                    int frame = ((Long) actionType.get("frame")).intValue();
+                    String target = (String) actionType.get("target");
+                    ChainAnimationAction caa = new ChainAnimationAction(this, frame, target);
+                    MCMEAnimations.actions.add(caa);
                 }
             }
         }
@@ -273,5 +290,7 @@ public abstract class MCMEAnimation {
             }
 
         }
-    };
+    }
+
+    ;
 }

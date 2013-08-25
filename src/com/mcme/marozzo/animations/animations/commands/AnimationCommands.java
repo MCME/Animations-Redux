@@ -234,6 +234,9 @@ public class AnimationCommands implements CommandExecutor {
                             if (strings[1].equals("frame")) {
                                 AnimationFactory.setActionFrame(p, Integer.parseInt(strings[2]), Integer.parseInt(strings[3]));
                                 return true;
+                            } else if (strings[1].equals("target")) {
+                                AnimationFactory.setActionTarget(p, Integer.parseInt(strings[2]), strings[3]);
+                                return true;
                             }
                         }
                     }
@@ -260,7 +263,8 @@ public class AnimationCommands implements CommandExecutor {
                             return true;
                         }
                     } else if (strings[0].equals("description")) {
-                        //
+                        AnimationFactory.setAnimationDescription(p, strings);
+                        return true;
                     }
                     showAnimationHelp(p);
                     break;
@@ -321,8 +325,9 @@ public class AnimationCommands implements CommandExecutor {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Building Animation Actions");
         p.sendMessage(ChatColor.AQUA + "Available commands:");
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "list" + ChatColor.RESET + " - lists the currently stored actions");
-        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "new <explosion|move-players>" + ChatColor.RESET + " - creates a new action of given type");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "new <explosion|move-players|chain-animation>" + ChatColor.RESET + " - creates a new action of given type");
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "delete <#actionID>" + ChatColor.RESET + " - deletes the action with the given ID");
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "set frame <#actionID> <#frame>" + ChatColor.RESET + " - sets the activation Frame of this action");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "set target <#actionID> <targetname>" + ChatColor.RESET + " - sets the target animation of this action");
     }
 }
