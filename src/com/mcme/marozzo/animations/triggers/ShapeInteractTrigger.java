@@ -86,6 +86,14 @@ public class ShapeInteractTrigger implements AnimationTrigger {
         return result;
     }
 
+    public String toHtml() {
+        return String.format(template, toString(), "activate when player interact with shape", "on frame #"+String.valueOf(frame));
+    }
+
+    public MCMEAnimation getParent() {
+        return parent;
+    }
+
 
 
 }

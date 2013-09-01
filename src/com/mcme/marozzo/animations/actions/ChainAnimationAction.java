@@ -73,4 +73,8 @@ public class ChainAnimationAction implements AnimationAction {
     public String toString() {
         return "Chain Animation action";
     }
+
+    public String toHtml() {
+        return String.format(template, toString(), "Start "+targetName, "on frame #"+String.valueOf(frame));
+    }
 }

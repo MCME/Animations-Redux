@@ -104,4 +104,12 @@ public class BlockInteractTrigger implements AnimationTrigger {
         result.put("block_interaction", data);
         return result;
     }
+
+    public String toHtml() {
+        return String.format(template, toString(), "Block interaction on "+String.valueOf(triggerLocation.size())+" blocks", "on frame #"+String.valueOf(frame));
+    }
+
+    public MCMEAnimation getParent() {
+        return parent;
+    }
 }

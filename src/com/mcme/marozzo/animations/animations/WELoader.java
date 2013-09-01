@@ -8,6 +8,7 @@ import com.mcme.marozzo.animations.MCMEAnimations;
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.EditSessionFactory;
+import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
@@ -47,9 +48,17 @@ public class WELoader {
         return null;
     }
 
-    public static boolean placeFrame(Location loc, CuboidClipboard clip, int localWorldIndex) {
+    private static LocalWorld getLocalWorldByName(String name){
+        for(LocalWorld lw : MCMEAnimations.WEPlugin.getServerInterface().getWorlds()){
+            if(lw.getName().equals(name)){
+                return lw;
+            }
+        }
+        return null;
+    }
+    public static boolean placeFrame(Location loc, CuboidClipboard clip, String localWorldName) {
         EditSessionFactory esf = new EditSessionFactory();
-        EditSession es = esf.getEditSession(MCMEAnimations.WEPlugin.getServerInterface().getWorlds().get(localWorldIndex), 65535);
+        EditSession es = esf.getEditSession(getLocalWorldByName(localWorldName), 65535);
 
         try {
 //            clip.place(es, BukkitUtil.toVector(loc), false);

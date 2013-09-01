@@ -88,4 +88,8 @@ public class MovePlayersAction implements AnimationAction {
         return "Move Players action";
     }
 
+    public String toHtml() {
+        return String.format(template, toString(), "Move players in the direction of the animation", "on frame #"+String.valueOf(frame));
+    }
+
 }

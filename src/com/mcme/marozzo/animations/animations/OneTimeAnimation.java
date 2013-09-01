@@ -44,7 +44,7 @@ public class OneTimeAnimation extends MCMEAnimation {
 
                     public void run() {
                         CuboidClipboard clip = clipboards.get(clipboardIndex);
-                        WELoader.placeFrame(origin, clip, localWorldIndex);
+                        WELoader.placeFrame(origin, clip, localWorldName);
 
                         Vector previousMin = shape.getMinimumPoint();
 

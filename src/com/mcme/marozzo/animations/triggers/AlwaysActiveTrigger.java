@@ -67,4 +67,12 @@ public class AlwaysActiveTrigger implements AnimationTrigger {
         result.put("always_active", dummy);
         return result;
     }
+
+    public String toHtml() {
+        return String.format(template, toString(), "This animation will start on the first player joining the server", "");
+    }
+
+    public MCMEAnimation getParent() {
+        return parent;
+    }
 }

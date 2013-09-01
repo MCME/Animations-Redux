@@ -45,7 +45,7 @@ public class TwoWayAnimation extends MCMEAnimation {
 
                         public void run() {
                             CuboidClipboard clip = clipboards.get(clipboardIndex);
-                            WELoader.placeFrame(origin, clip, localWorldIndex);
+                            WELoader.placeFrame(origin, clip, localWorldName);
                             Vector v1 = new Vector(origin.getX() + clip.getOffset().getX(), origin.getY() + clip.getOffset().getY(), origin.getZ() + clip.getOffset().getZ());
                             Vector v2 = new Vector(Math.floor(origin.getX() + clip.getWidth() + clip.getOffset().getX() - 1),
                                     Math.floor(origin.getY() + clip.getHeight() + clip.getOffset().getY() - 1),
@@ -84,7 +84,7 @@ public class TwoWayAnimation extends MCMEAnimation {
 
                         public void run() {
                             CuboidClipboard clip = clipboards.get(clipboardIndex);
-                            WELoader.placeFrame(origin, clip, localWorldIndex);
+                            WELoader.placeFrame(origin, clip, localWorldName);
                             Vector v1 = new Vector(origin.getX() + clip.getOffset().getX(), origin.getY() + clip.getOffset().getY(), origin.getZ() + clip.getOffset().getZ());
                             Vector v2 = new Vector(Math.floor(origin.getX() + clip.getWidth() + clip.getOffset().getX() - 1),
                                     Math.floor(origin.getY() + clip.getHeight() + clip.getOffset().getY() - 1),

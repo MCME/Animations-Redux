@@ -60,4 +60,8 @@ public class ExplosionAction implements AnimationAction {
     public String toString() {
         return "Explosion action";
     }
+
+    public String toHtml() {
+        return String.format(template, toString(), "Create explosion centered on the shape", "on frame #"+String.valueOf(frame));
+    }
 }

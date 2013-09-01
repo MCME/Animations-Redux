@@ -93,4 +93,12 @@ public class PlayerChatTrigger implements AnimationTrigger {
         result.put("player_chat", data);
         return result;
     }
+
+    public String toHtml() {
+        return String.format(template, toString(), "activated by \""+message+"\" chat command", "on frame #"+String.valueOf(frame));
+    }
+
+    public MCMEAnimation getParent() {
+        return parent;
+    }
 }

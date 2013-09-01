@@ -50,7 +50,7 @@ public class LoopAnimation extends MCMEAnimation {
             public void run() {
 //                SamplePlugin.WEPlugin.getServer().getLogger().info("Rendering " + animationName + " frame: " + currentFrame);
                 CuboidClipboard clip = clipboards.get(currentFrame);
-                WELoader.placeFrame(origin, clip, localWorldIndex);
+                WELoader.placeFrame(origin, clip, localWorldName);
 
                 Vector previousMin = shape.getMinimumPoint();
 

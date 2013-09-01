@@ -450,6 +450,11 @@ public class AnimationFactory {
             return false;
         }
 
+        if ((null == animationDescription) || (animationDescription.trim().isEmpty())) {
+            p.sendMessage(ChatColor.RED + "The animation needs a description. Use /anim description while in Animation setup mode to set up the animation description");
+            return false;
+        }
+
         if (null == origin) {
             p.sendMessage(ChatColor.RED + "Origin has not been set. Use /anim origin while in Animation setup mode to set up the animation origin");
             return false;
@@ -493,7 +498,7 @@ public class AnimationFactory {
         //Save the configuration file
         JSONObject configuration = new JSONObject();
         configuration.put("name", animationName);
-        configuration.put("world-index", getLocalWorldIndex(p.getWorld()));
+        configuration.put("world-index", p.getWorld().getName());
         JSONArray frameList = new JSONArray();
         JSONArray durationList = new JSONArray();
         for (int i = 0; i < frames.size(); i++) {
@@ -582,17 +587,6 @@ public class AnimationFactory {
             }
         }
         return null;
-    }
-
-    private static int getLocalWorldIndex(World w) {
-        String name = w.getName();
-        for (int i = 0; i < MCMEAnimations.WEPlugin.getServerInterface().getWorlds().size(); i++) {
-            LocalWorld lw = MCMEAnimations.WEPlugin.getServerInterface().getWorlds().get(i);
-            if (lw.getName().equals(name)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     //RECURSIVE FILE DELETION

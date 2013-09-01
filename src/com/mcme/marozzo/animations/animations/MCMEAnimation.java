@@ -5,6 +5,7 @@
 package com.mcme.marozzo.animations.animations;
 
 import com.mcme.marozzo.animations.AnimationAction;
+import com.mcme.marozzo.animations.AnimationTrigger;
 import com.mcme.marozzo.animations.MCMEAnimations;
 import com.mcme.marozzo.animations.actions.ChainAnimationAction;
 import com.mcme.marozzo.animations.actions.ExplosionAction;
@@ -19,6 +20,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Location;
@@ -34,6 +37,45 @@ import org.json.simple.parser.ParseException;
  * @author Luca
  */
 public abstract class MCMEAnimation {
+
+    public static String HtmlTemplate =
+            "<div class=\"content good\">"
+            + "<strong>%1$s</strong>" +//ANIMATION NAME
+            "<span style=\"float:right\">%2$s</span>" +//ANIMATION TYPE
+            "<br/>"
+            + "<br/>"
+            + "<div class=\"in-content lightgrey\">%3$s</div>" +//ANIMATION DESCRIPTION
+            "<div class=\"in-content lightgrey\"><b>Origin:</b>%4$s</div>" +//ORIGIN
+            "<div class=\"in-content lightgrey\"><b>Created by:</b>%5$s</div>" +//CREATOR
+            "<div class=\"in-content lightgrey\"><b>On world:</b>%6$s</div>" +//WORLD
+            "<div class=\"in-content lightgrey\">"
+            + "<h3>Clipboards</h3>:"
+            + "<table class=\"in-content darkgrey white no-padding\">"
+            + "%7$s" +//CLIPBOARDS LIST
+            "</table>"
+            + "</div>"
+            + "<div class=\"in-content lightgrey\">"
+            + "<h3>Frames</h3>:"
+            + "<table class=\"in-content darkgrey white no-padding\">"
+            + "%8$s" +//FRAMES LIST
+            "</table>"
+            + "</div>"
+            + "<div class=\"in-content lightgrey\">"
+            + "<h3>Triggers</h3>:"
+            + "<table class=\"in-content darkgrey white no-padding\">"
+            + "%9$s" +//TRIGGERS LIST
+            "</table>"
+            + "</div>"
+            + "<div class=\"in-content lightgrey\">"
+            + "<h3>Actions</h3>:"
+            + "<table class=\"in-content darkgrey white no-padding\">"
+            + "%10$s" +//ACTIONS LIST
+            "</table>"
+            + "</div>"
+            + "</div>"
+            + "<div class=\"content darkgrey\"><br/></div>";
+    public static String clipTemplate = "<tr><td>%1$s</td><td style=\"text-align:right\">%2$s</td></tr>"; //Clip name and file size
+    public static String framesTemplate = "<tr><td>%1$s</td><td>clipboard: %2$s</td><td style=\"text-align:right\">delay: %3$s ticks</td></tr>"; //Frame index, clipboard name and delay
 
     public enum animationType {
 
@@ -58,7 +100,7 @@ public abstract class MCMEAnimation {
     protected File configFile;
     protected String animationName;
     protected String animationDescription;
-    protected int localWorldIndex;
+    protected String localWorldName;
     protected JSONObject animationConfiguration;
     protected ArrayList<MCMEAnimationFrame> frames = new ArrayList<MCMEAnimationFrame>();
     protected ArrayList<CuboidClipboard> clipboards = new ArrayList<CuboidClipboard>();
@@ -93,7 +135,7 @@ public abstract class MCMEAnimation {
     abstract public animationType getType();
 
     public World getWorld() {
-        return MCMEAnimations.MCMEAnimationsInstance.getServer().getWorld(MCMEAnimations.WEPlugin.getServerInterface().getWorlds().get(localWorldIndex).getName());
+        return MCMEAnimations.MCMEAnimationsInstance.getServer().getWorld(localWorldName);
     }
 
     public String getName() {
@@ -144,7 +186,7 @@ public abstract class MCMEAnimation {
             animationName = (String) animationConfiguration.get("name");
             schematicBaseName = animationName;
 
-            localWorldIndex = ((Long) (animationConfiguration.get("world-index"))).intValue();
+            localWorldName = (String)animationConfiguration.get("world-index");
 
             JSONArray JSONFrames = (JSONArray) animationConfiguration.get("frames");
             JSONArray JSONDurations = (JSONArray) animationConfiguration.get("durations");
@@ -293,4 +335,67 @@ public abstract class MCMEAnimation {
     }
 
     ;
+
+    public String toHtml() {
+        HashSet clips = new HashSet();
+
+        String framesString = "";
+        String clipsString = "";
+
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("generating frame info for " + animationName);
+
+        for (int i = 0; i < frames.size(); i++) {
+            MCMEAnimationFrame f = frames.get(i);
+            clips.add(f.getFrameName());
+            framesString += String.format(framesTemplate, String.valueOf(i), f.getFrameName(), String.valueOf(f.getDuration()));
+        }
+
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("generating clip info for " + animationName);
+        Object[] clipsArray = clips.toArray();
+        for (int i = 0; i < clipsArray.length; i++) {
+            clipsString += String.format(clipTemplate, clipsArray[i].toString(), "0");
+        }
+
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("generating trigger info for " + animationName);
+        String triggersString = "";
+        for (AnimationTrigger t : MCMEAnimations.triggers) {
+            if (t.getParent().equals(this)) {
+                triggersString += t.toHtml();
+            }
+        }
+
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("generating actions info for " + animationName);
+        String actionsString = "";
+        for (AnimationAction a : MCMEAnimations.actions) {
+            if (a.getAnimationName().equals(this.animationName)) {
+                actionsString += a.toHtml();
+            }
+        }
+
+        //ANIMATION NAME
+        //ANIMATION TYPE
+        //ANIMATION DESCRIPTION
+        //ORIGIN
+        //CREATOR
+        //WORLD
+        //CLIPBOARDS LIST
+        //FRAMES LIST
+        //TRIGGERS LIST
+        //ACTIONS LIST
+        String originString = "X:"+origin.getX()+" Y:"+origin.getY()+" Z:"+origin.getZ();
+        String worldString = localWorldName;
+
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("wrapping data for " + animationName);
+        return String.format(HtmlTemplate,
+                animationName,
+                getType().toString(),
+                animationDescription,
+                originString,
+                (String) animationConfiguration.get("creator"),
+                worldString,
+                clipsString,
+                framesString,
+                triggersString,
+                actionsString);
+    }
 }

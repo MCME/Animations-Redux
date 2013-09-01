@@ -13,6 +13,8 @@ import org.json.simple.JSONObject;
  */
 public interface AnimationAction {
 
+    public static String template ="<tr><td>%1$s</td><td>%2$s</td><td style=\"text-align:right\">%3$s</td></tr>";
+
     public boolean check();
 
     public void performAction();
@@ -24,4 +26,6 @@ public interface AnimationAction {
     public String getAnimationName();
 
     public JSONObject toJSON();
+
+    public String toHtml();
 }
