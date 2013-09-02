@@ -43,10 +43,6 @@ public class AlwaysActiveTrigger implements AnimationTrigger {
         //Do nothing
     }
 
-    public Object getData() {
-        return null;
-    }
-
     public void setData(Object data) {
         //Do nothing
     }

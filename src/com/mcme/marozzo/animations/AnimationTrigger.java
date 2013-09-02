@@ -21,7 +21,6 @@ public interface AnimationTrigger {
     public void trigger();
     public int getFrame();
     public void setFrame(int frame);
-    public Object getData();
     public void setData(Object data);
     public void setParent(MCMEAnimation parent);
     public MCMEAnimation getParent();

@@ -63,10 +63,6 @@ public class BlockInteractTrigger implements AnimationTrigger {
         this.frame = frame;
     }
 
-    public Object getData() {
-        return triggerLocation;
-    }
-
     public void setData(Object data) {
         if (data instanceof ArrayList) {
             try {

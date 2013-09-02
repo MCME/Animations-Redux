@@ -59,10 +59,6 @@ public class PlayerChatTrigger implements AnimationTrigger {
         this.frame = frame;
     }
 
-    public Object getData() {
-        return new Object[]{radius, message};
-    }
-
     public void setData(Object data) {
         if (data instanceof Object[]) {
             if (((Object[]) data).length == 2) {

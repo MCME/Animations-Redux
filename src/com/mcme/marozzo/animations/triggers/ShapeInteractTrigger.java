@@ -61,10 +61,6 @@ public class ShapeInteractTrigger implements AnimationTrigger {
         this.frame = frame;
     }
 
-    public Object getData() {
-        return null;
-    }
-
     public void setData(Object data) {
         //Do nothing
     }
