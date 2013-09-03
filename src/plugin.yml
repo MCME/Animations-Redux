@@ -3,7 +3,7 @@ main: com.mcme.marozzo.animations.MCMEAnimations
 destription: Stop-motion animation plugin for MCME
 author: Marozzo
 depend: [WorldEdit]
-version: 2.0.5
+version: 2.0.6
 commands:
    anim:
       description: MCME Animations creator.

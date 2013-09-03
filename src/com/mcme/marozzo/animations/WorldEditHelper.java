@@ -6,13 +6,10 @@ package com.mcme.marozzo.animations;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
-import com.sk89q.worldedit.DisallowedItemException;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.IncompleteRegionException;
 import com.sk89q.worldedit.LocalPlayer;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.LocalWorld;
-import com.sk89q.worldedit.UnknownItemException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
@@ -20,7 +17,6 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 import com.sk89q.worldedit.commands.RegionCommands;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *

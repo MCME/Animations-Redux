@@ -6,7 +6,6 @@
 package com.mcme.marozzo.animations.animations;
 
 import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.Vector;
 
 /**
  *

@@ -21,7 +21,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Location;
@@ -110,9 +109,7 @@ public abstract class MCMEAnimation {
 
     public MCMEAnimation(File configFile) {
         this.configFile = configFile;
-    }
-
-    ;
+    };
 
     public abstract void init();
 
@@ -342,7 +339,7 @@ public abstract class MCMEAnimation {
         String framesString = "";
         String clipsString = "";
 
-        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("generating frame info for " + animationName);
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().log(Level.FINE, "generating frame info for {0}", animationName);
 
         for (int i = 0; i < frames.size(); i++) {
             MCMEAnimationFrame f = frames.get(i);
@@ -350,13 +347,13 @@ public abstract class MCMEAnimation {
             framesString += String.format(framesTemplate, String.valueOf(i), f.getFrameName(), String.valueOf(f.getDuration()));
         }
 
-        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("generating clip info for " + animationName);
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().log(Level.FINE, "generating clip info for {0}", animationName);
         Object[] clipsArray = clips.toArray();
         for (int i = 0; i < clipsArray.length; i++) {
             clipsString += String.format(clipTemplate, clipsArray[i].toString(), "0");
         }
 
-        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("generating trigger info for " + animationName);
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().log(Level.FINE, "generating trigger info for {0}", animationName);
         String triggersString = "";
         for (AnimationTrigger t : MCMEAnimations.triggers) {
             if (t.getParent().equals(this)) {
@@ -364,7 +361,7 @@ public abstract class MCMEAnimation {
             }
         }
 
-        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("generating actions info for " + animationName);
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().log(Level.FINE, "generating actions info for {0}", animationName);
         String actionsString = "";
         for (AnimationAction a : MCMEAnimations.actions) {
             if (a.getAnimationName().equals(this.animationName)) {
@@ -385,7 +382,7 @@ public abstract class MCMEAnimation {
         String originString = "X:"+origin.getX()+" Y:"+origin.getY()+" Z:"+origin.getZ();
         String worldString = localWorldName;
 
-        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("wrapping data for " + animationName);
+        MCMEAnimations.MCMEAnimationsInstance.getLogger().log(Level.INFO, "wrapping data for {0}", animationName);
         return String.format(HtmlTemplate,
                 animationName,
                 getType().toString(),

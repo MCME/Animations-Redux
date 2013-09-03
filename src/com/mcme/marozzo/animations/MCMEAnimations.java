@@ -59,7 +59,7 @@ public class MCMEAnimations extends JavaPlugin {
         loadAnimations();
 
         PluginDescriptionFile pdfFile = this.getDescription();
-        getLogger().info(pdfFile.getName() + " version " + pdfFile.getVersion() + "is enabled!");
+        getLogger().log(Level.INFO, "{0} version {1}is enabled!", new Object[]{pdfFile.getName(), pdfFile.getVersion()});
 
         final Plugin plugin = this;
         getServer().getScheduler().runTaskLater(this, new Runnable(){

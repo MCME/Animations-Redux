@@ -63,6 +63,11 @@ public class AnimationManager implements CommandExecutor {
         if (cs instanceof Player) {
             Player p = (Player) cs;
 
+            if (strings[0].equals("debug")) {
+                executeDebugCommand(p, strings);
+                return true;
+            }
+
             if (strings.length == 1) {
                 if (strings[0].equals("list")) {
                     listAnimations(p);
@@ -70,9 +75,6 @@ public class AnimationManager implements CommandExecutor {
                 } else if (strings[0].equals("export")) {
                     exportAnimationsInfo(p);
                     return true;                
-                } else if (strings[0].equals("sound")) {
-                    p.playSound(p.getLocation(), strings[1], Integer.valueOf(strings[2]), Integer.valueOf(strings[3]));
-                    return true;
                 }
             } else if (strings.length == 2) {
                 if (strings[0].equals("delete")) {
@@ -120,6 +122,11 @@ public class AnimationManager implements CommandExecutor {
             }
         }
         p.sendMessage(ChatColor.RED + "Could not find animation \"" + animationName + "\"");
+    }
+
+    private void executeDebugCommand(Player p, String[] strings){
+        p.playSound(p.getLocation(), strings[1], Integer.valueOf(strings[2]), Integer.valueOf(strings[3]));
+        p.sendMessage(ChatColor.YELLOW+""+ChatColor.BOLD+"Sound played");
     }
 
     private void exportAnimationsInfo(Player p){

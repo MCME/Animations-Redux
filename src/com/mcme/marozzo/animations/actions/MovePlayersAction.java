@@ -9,9 +9,9 @@ import com.mcme.marozzo.animations.MCMEAnimations;
 import com.mcme.marozzo.animations.animations.MCMEAnimation;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -41,18 +41,27 @@ public class MovePlayersAction implements AnimationAction {
     public void performAction() {
         for (Player p : MCMEAnimations.MCMEAnimationsInstance.getServer().getOnlinePlayers()) {
             if (p.getWorld().equals(parent.getWorld())) {
-                if (parent.getBounds().contains(BukkitUtil.toVector(p.getLocation()))) {
-                    Location loc = p.getLocation();                    
-                    loc.setX(loc.getX() - parent.getVirtualDirection().getX());
-                    loc.setY(loc.getY() - parent.getVirtualDirection().getY());
-                    loc.setZ(loc.getZ() - parent.getVirtualDirection().getZ());
 
-//                    MCMEAnimations.MCMEAnimationsInstance.getServer().getLogger().info("*********************************");
-//                    MCMEAnimations.MCMEAnimationsInstance.getServer().getLogger().info("Frame : "+parent.getCurrentFrame());
-//                    MCMEAnimations.MCMEAnimationsInstance.getServer().getLogger().info("Player pos : "+p.getLocation().getX()+","+p.getLocation().getY()+","+p.getLocation().getZ());
-//                    MCMEAnimations.MCMEAnimationsInstance.getServer().getLogger().info("Direction  : "+parent.getVirtualDirection().getX()+","+parent.getVirtualDirection().getY()+","+parent.getVirtualDirection().getZ());
-//                    MCMEAnimations.MCMEAnimationsInstance.getServer().getLogger().info("Teleport to: "+loc.getX()+","+loc.getY()+","+loc.getZ());
-                    p.teleport(loc);
+                Location loc = p.getLocation();
+
+                double x = loc.getX();
+                double y = loc.getY();
+                double z = loc.getZ();
+
+                Vector min = parent.getBounds().getMinimumPoint();
+                Vector max = parent.getBounds().getMaximumPoint();
+
+                if (x >= min.getX() && x <= max.getX()
+                        && y >= min.getY() && y <= max.getY()
+                        && z >= min.getZ() && z <= max.getZ()) {
+
+                    Location newLoc = new Location(loc.getWorld(),
+                            loc.getX() - parent.getVirtualDirection().getX(),
+                            loc.getY() - parent.getVirtualDirection().getY(),
+                            loc.getZ() - parent.getVirtualDirection().getZ(),
+                            loc.getYaw(), loc.getPitch());
+
+                    p.teleport(newLoc);
                 }
             }
         }
@@ -89,7 +98,6 @@ public class MovePlayersAction implements AnimationAction {
     }
 
     public String toHtml() {
-        return String.format(template, toString(), "Move players in the direction of the animation", "on frame #"+String.valueOf(frame));
+        return String.format(template, toString(), "Move players in the direction of the animation", "on frame #" + String.valueOf(frame));
     }
-
 }
