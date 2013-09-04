@@ -52,6 +52,14 @@ public class AnimationFactory {
         STATUS_ANIMATION_SETUP,
         STATUS_BUILDING_ACTIONS
     }
+
+    public enum AutomationState {
+
+        STATUS_NO_AUTOMATION,
+        STATUS_AUTO_FRAMES,
+        STATUS_AUTO_TRIGGERS,
+        STATUS_AUTO_ACTIONS
+    }
     private static String animationName;
     private static String animationDescription;
 //    private static int worldIndex;
@@ -63,6 +71,7 @@ public class AnimationFactory {
     private static ArrayList<AnimationTrigger> triggers = new ArrayList<AnimationTrigger>();
     private static ArrayList<AnimationAction> actions = new ArrayList<AnimationAction>();
     private static FactoryState status = FactoryState.STATUS_IDLE;
+    private static AutomationState automationStatus = AutomationState.STATUS_NO_AUTOMATION;
 
     public static FactoryState getStatus() {
         return status;
@@ -71,6 +80,14 @@ public class AnimationFactory {
     public static void setStatus(Player p, FactoryState factoryStatus) {
         status = factoryStatus;
         owner = p;
+    }
+
+    public static AutomationState getAutomationStatus() {
+        return automationStatus;
+    }
+
+    public static void setAutomationState(AutomationState status) {
+        automationStatus = status;
     }
 
     public static Player getOwner() {
@@ -86,6 +103,124 @@ public class AnimationFactory {
         animationName = "";
         origin = null;
         setStatus(null, FactoryState.STATUS_IDLE);
+    }
+
+    public static boolean automateActions(Player p, String actionType){
+        if (frames.isEmpty()) {
+            p.sendMessage(ChatColor.RED + "Animation has no frames. Create some frames before adding actions");
+            return false;
+        }
+        if(actionType.equals("move")){
+            for(int i=0; i<frames.size(); i++){
+                newAction(p, "move-players");
+                setActionFrame(p, i, i);
+            }
+
+        }else{
+            p.sendMessage(ChatColor.RED + "Invalid action type. Available types: move");
+            return false;
+        }
+
+        p.sendMessage(ChatColor.BLUE + "actions created.");
+        return true;
+    }
+
+    public static boolean automateTriggers(Player p, String[] strings) {
+        if (frames.isEmpty()) {
+            p.sendMessage(ChatColor.RED + "Animation has no frames. Create some frames before adding triggers");
+            return false;
+        }
+        if (strings[2].equals("shape")) {
+            newTrigger(p, "shape");
+            setTriggerFrame(p, 0, 0);
+            newTrigger(p, "shape");
+            setTriggerFrame(p, 1, frames.size() - 1);
+
+        } else if (strings[2].equals("chat")) {
+            try{
+                newTrigger(p, "player-chat");
+                setPlayerChatTrigger(p, 0, strings[3], Double.parseDouble(strings[4]));
+                setTriggerFrame(p, 0, 0);
+                newTrigger(p, "player-chat");
+                setTriggerFrame(p, 1, frames.size() - 1);
+                setPlayerChatTrigger(p, 1, strings[3], Double.parseDouble(strings[4]));
+            }catch(Exception ex){
+                p.sendMessage(ChatColor.RED + "You need to specify a chat command and a duration!");
+                return false;
+            }
+        } else {
+            p.sendMessage(ChatColor.RED + "Invalid trigger type. Available types: shape, chat");
+            return false;
+        }
+
+        p.sendMessage(ChatColor.BLUE + strings[2] + " triggers created.");
+        return true;
+    }
+
+    public static boolean automateFrames(Player p, String type, int delay) {
+
+        if (clips.isEmpty()) {
+            p.sendMessage(ChatColor.RED + "Clipboard storage is empty. Store some clipboards before creating the frames");
+            return false;
+        }
+        animationType animation_type = null;
+        if (type.equals("one-time")) {
+            animation_type = animationType.ONE_TIME_ANIMATION;
+        } else if (type.equals("two-way")) {
+            animation_type = animationType.REVERSIBLE_ANIMATION;
+        } else if (type.equals("loop")) {
+            animation_type = animationType.LOOP_ANIMATION;
+        } else {
+            p.sendMessage(ChatColor.RED + "Invalid animation type. Available types: one-time, two-way, loop");
+            return false;
+        }
+        switch (animation_type) {
+            case ONE_TIME_ANIMATION:
+                setAnimationType(p, "one-time");
+                int frameIndex = 0;
+                for (int i = 0; i < clips.size(); i++) {
+                    MCMEClipboardStore c = clips.get(i);
+                    newFrame(p);
+                    setFrameClipboard(p, frameIndex, c.getSchematicName());
+                    setFrameDuration(p, frameIndex, delay * frameIndex);
+                    frameIndex++;
+                }
+                newFrame(p);
+                setFrameClipboard(p, frameIndex, clips.get(clips.size() - 2).getSchematicName());
+                setFrameDuration(p, frameIndex, delay * 9 + delay * frameIndex);
+                frameIndex++;
+                for (int i = clips.size() - 2; i >= 0; i--) {
+                    MCMEClipboardStore c = clips.get(i);
+                    newFrame(p);
+                    setFrameClipboard(p, frameIndex, c.getSchematicName());
+                    setFrameDuration(p, frameIndex, delay * frameIndex + delay * 10);
+                }
+                break;
+            case REVERSIBLE_ANIMATION:
+                setAnimationType(p, "two-way");
+                frameIndex = 0;
+                for (int i = 0; i < clips.size(); i++) {
+                    MCMEClipboardStore c = clips.get(i);
+                    newFrame(p);
+                    setFrameClipboard(p, frameIndex, c.getSchematicName());
+                    setFrameDuration(p, frameIndex, delay * frameIndex);
+                    frameIndex++;
+                }
+                break;
+            case LOOP_ANIMATION:
+                setAnimationType(p, "loop");
+                frameIndex = 0;
+                for (int i = 0; i < clips.size(); i++) {
+                    MCMEClipboardStore c = clips.get(i);
+                    newFrame(p);
+                    setFrameClipboard(p, frameIndex, c.getSchematicName());
+                    setFrameDuration(p, frameIndex, delay);
+                    frameIndex++;
+                }
+                break;
+        }
+        p.sendMessage(ChatColor.BLUE + type + " frames created.");
+        return true;
     }
 
     public static boolean deleteClip(Player p, String frameName) {

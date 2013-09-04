@@ -3,7 +3,7 @@ main: com.mcme.marozzo.animations.MCMEAnimations
 destription: Stop-motion animation plugin for MCME
 author: Marozzo
 depend: [WorldEdit]
-version: 2.0.6
+version: 2.0.8
 commands:
    anim:
       description: MCME Animations creator.
@@ -14,7 +14,7 @@ commands:
    manage:
      desctiption: MCME Animations manager.
      aliases: [m, man]
-     usage: /manage ti show the list of commands
+     usage: /manage to show the list of commands
      permission: MCMEAnimations.manage
      permission-message: You don't have permission to manage MCMEAnimations files
 permissions:

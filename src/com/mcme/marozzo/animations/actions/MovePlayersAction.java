@@ -10,6 +10,7 @@ import com.mcme.marozzo.animations.animations.MCMEAnimation;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
@@ -44,27 +45,36 @@ public class MovePlayersAction implements AnimationAction {
 
                 Location loc = p.getLocation();
 
-                double x = loc.getX();
-                double y = loc.getY();
-                double z = loc.getZ();
-
-                Vector min = parent.getBounds().getMinimumPoint();
-                Vector max = parent.getBounds().getMaximumPoint();
-
-                if (x >= min.getX() && x <= max.getX()
-                        && y >= min.getY() && y <= max.getY()
-                        && z >= min.getZ() && z <= max.getZ()) {
-
+                if (isInBounds(loc, parent.getBounds())) {
                     Location newLoc = new Location(loc.getWorld(),
                             loc.getX() - parent.getVirtualDirection().getX(),
                             loc.getY() - parent.getVirtualDirection().getY(),
                             loc.getZ() - parent.getVirtualDirection().getZ(),
-                            loc.getYaw(), loc.getPitch());
+                            p.getEyeLocation().getYaw(), p.getEyeLocation().getPitch());
 
                     p.teleport(newLoc);
                 }
             }
         }
+    }
+
+    private boolean isInBounds(Location loc, CuboidRegion bounds) {
+        boolean result;
+        double x = Math.floor(loc.getX());
+        double y = Math.floor(loc.getY());
+        double z = Math.floor(loc.getZ());
+
+        Vector min = bounds.getMinimumPoint();
+        Vector max = bounds.getMaximumPoint();
+        result = (x >= Math.floor(min.getX()) && x <= Math.floor(max.getX())
+                && y >= Math.floor(min.getY()) && y <= Math.floor(max.getY())
+                && z >= Math.floor(min.getZ()) && z <= Math.floor(max.getZ()));
+
+//        MCMEAnimations.MCMEAnimationsInstance.getLogger().info("-------TESTING--------");
+//        MCMEAnimations.MCMEAnimationsInstance.getLogger().log(Level.INFO, "Loc - X: {0} Y:{1} Z: {2}", new Object[]{x, y, z});
+//        MCMEAnimations.MCMEAnimationsInstance.getLogger().log(Level.INFO, "Min - X: {0} Y:{1} Z: {2}", new Object[]{min.getX(), min.getY(), min.getZ()});
+//        MCMEAnimations.MCMEAnimationsInstance.getLogger().log(Level.INFO, "Max - X: {0} Y:{1} Z: {2}", new Object[]{max.getX(), max.getY(), max.getZ()});
+        return result;
     }
 
     public int getFrame() {

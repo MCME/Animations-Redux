@@ -215,6 +215,7 @@ public abstract class MCMEAnimation {
     }
 
     public void executeActions() {
+//        MCMEAnimations.MCMEAnimationsInstance.getServer().getScheduler().runTaskAsynchronously(MCMEAnimations.MCMEAnimationsInstance, new Runnable() {
         MCMEAnimations.MCMEAnimationsInstance.getServer().getScheduler().runTaskAsynchronously(MCMEAnimations.MCMEAnimationsInstance, new Runnable() {
 
             public void run() {

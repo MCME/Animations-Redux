@@ -47,235 +47,354 @@ public class AnimationCommands implements CommandExecutor {
             if (!AnimationFactory.getOwner().getDisplayName().equals(p.getDisplayName())) {
                 p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "An animation is currently being created by " + AnimationFactory.getOwner().getDisplayName());
                 p.sendMessage(ChatColor.RED + "Use /anim reset to reset the plugin. WARNING: ask " + AnimationFactory.getOwner().getDisplayName() + " first!!");
+                return true;
             }
         }
 
         if (strings.length == 0) {
-            switch (AnimationFactory.getStatus()) {
-                case STATUS_STORING_CLIPS:
-                    showClipHelp(p);
-                    break;
-                case STATUS_BUILDING_FRAME:
-                    showFramesHelp(p);
-                    break;
-                case STATUS_BUILDING_TRIGGER:
-                    showTriggersHelp(p);
-                    break;
-                case STATUS_ANIMATION_SETUP:
-                    showAnimationHelp(p);
-                    break;
-                case STATUS_BUILDING_ACTIONS:
-                    showActionsHelp(p);
-                    break;
-                default:
-                    p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "MCMEAnimations commands usage:");
-                    p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "?" + ChatColor.RESET + " - Show help on the current status");
-                    p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "reset" + ChatColor.RESET + " - Reset the plugin status and reload the animation configuration files");
-                    p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "switch" + ChatColor.RESET + "" + ChatColor.AQUA + " <clipboards|animation|frames|triggers|actions|idle>" + ChatColor.RESET + " - Switch plugin mode");
-            }
+            showGeneralHelp(p);
             return true;
         }
 
         if (strings[0].equals("?")) {
-            switch (AnimationFactory.getStatus()) {
-                case STATUS_STORING_CLIPS:
-                    p.sendMessage(ChatColor.AQUA + "Storing Clipboards");
-                    break;
-                case STATUS_BUILDING_FRAME:
-                    p.sendMessage(ChatColor.AQUA + "Building Animation Frames");
-                    break;
-                case STATUS_BUILDING_TRIGGER:
-                    p.sendMessage(ChatColor.AQUA + "Building Animation Triggers");
-                    break;
-                case STATUS_ANIMATION_SETUP:
-                    p.sendMessage(ChatColor.AQUA + "Setting up Animation");
-                    break;
-                case STATUS_BUILDING_ACTIONS:
-                    p.sendMessage(ChatColor.AQUA + "Building Animation Actions");
-                    break;
-                default:
-                    p.sendMessage(ChatColor.AQUA + "Plugin in Idle status");
-            }
+            showPluginStatus(p);
             return true;
+        }
+
+        if (strings[0].equals("auto")) {
+            return manageAutomation(p, strings);
         }
 
         if (strings.length == 2) {
             if (strings[0].equals("switch")) {
-                if (strings[1].equals("clipboards")) {
-                    AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_STORING_CLIPS);
-                    p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Clipboard storing mode");
-                    return true;
-                } else if (strings[1].equals("animation")) {
-                    AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_ANIMATION_SETUP);
-                    p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Animation setup mode");
-                    return true;
-                } else if (strings[1].equals("frames")) {
-                    AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_BUILDING_FRAME);
-                    p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Frames building mode");
-                    return true;
-                } else if (strings[1].equals("triggers")) {
-                    AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_BUILDING_TRIGGER);
-                    p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Triggers building mode");
-                    return true;
-                } else if (strings[1].equals("actions")) {
-                    AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_BUILDING_ACTIONS);
-                    p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Actions building mode");
-                    return true;
-                } else if (strings[1].equals("idle")) {
-                    AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_IDLE);
-                    p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Idle mode");
-                    return true;
-                }
+                return manageSwitch(p, strings);
             }
         }
 
+        boolean success = false;
         try {
             switch (AnimationFactory.getStatus()) {
                 case STATUS_STORING_CLIPS:
-                    if (strings.length == 1) {
-                        if (strings[0].equals("list")) {
-                            AnimationFactory.listClips(p);
-                            return true;
-                        }
-                    } else if (strings.length == 2) {
-                        if (strings[0].equals("store")) {
-                            AnimationFactory.storeClip(p, strings[1]);
-                            return true;
-                        } else if (strings[0].equals("delete")) {
-                            AnimationFactory.deleteClip(p, strings[1]);
-                            return true;
-                        }
-                    }
-                    showClipHelp(p);
+                    success = manageStoreClips(p, strings);
                     break;
                 case STATUS_BUILDING_FRAME:
-                    if (strings.length == 1) {
-                        if (strings[0].equals("list")) {
-                            AnimationFactory.listFrames(p);
-                            return true;
-                        } else if (strings[0].equals("listclips")) {
-                            AnimationFactory.listClips(p);
-                            return true;
-                        } else if (strings[0].equals("new")) {
-                            AnimationFactory.newFrame(p);
-                            return true;
-                        }
-                    } else if (strings.length == 2) {
-                        if (strings[0].equals("delete")) {
-                            AnimationFactory.deleteFrame(p, Integer.parseInt(strings[1]));
-                            return true;
-                        } else if (strings[0].equals("insert")) {
-                            AnimationFactory.insertFrame(p, Integer.parseInt(strings[1]));
-                            return true;
-                        }
-                    } else if (strings.length == 3) {
-                        if (strings[0].equals("duration")) {
-                            AnimationFactory.setFrameDuration(p, Integer.parseInt(strings[1]), Integer.parseInt(strings[2]));
-                            return true;
-                        } else if (strings[0].equals("clipboard")) {
-                            AnimationFactory.setFrameClipboard(p, Integer.parseInt(strings[1]), strings[2]);
-                            return true;
-                        }
-                    }
-                    showFramesHelp(p);
+                    success = manageBuildingFrames(p, strings);
                     break;
                 case STATUS_BUILDING_TRIGGER:
-                    if (strings.length == 1) {
-                        if (strings[0].equals("list")) {
-                            AnimationFactory.listTriggers(p);
-                            return true;
-                        }
-                    } else if (strings.length == 2) {
-                        if (strings[0].equals("new")) {
-                            AnimationFactory.newTrigger(p, strings[1]);
-                            return true;
-                        } else if (strings[0].equals("delete")) {
-                            AnimationFactory.deleteTrigger(p, Integer.parseInt(strings[1]));
-                            return true;
-                        } else if (strings[0].equals("info")) {
-                            return true;
-                        }
-                    } else if (strings.length == 3) {
-                        if (strings[0].equals("set")) {
-                            if (strings[2].equals("blocks")) {
-                                AnimationFactory.setBlocksTrigger(p, Integer.parseInt(strings[1]));
-                                return true;
-                            }
-                        }
-                    } else if (strings.length == 4) {
-                        if (strings[0].equals("set")) {
-                            if (strings[1].equals("frame")) {
-                                AnimationFactory.setTriggerFrame(p, Integer.parseInt(strings[2]), Integer.parseInt(strings[3]));
-                                return true;
-                            } else {
-                                AnimationFactory.setPlayerChatTrigger(p, Integer.parseInt(strings[1]), strings[2], Double.parseDouble(strings[3]));
-                                return true;
-                            }
-                        }
-                    }
-                    showTriggersHelp(p);
+                    success = manageBuildingTriggers(p, strings);
                     break;
                 case STATUS_BUILDING_ACTIONS:
-                    if (strings.length == 1) {
-                        if (strings[0].equals("list")) {
-                            AnimationFactory.listActions(p);
-                            return true;
-                        }
-                    } else if (strings.length == 2) {
-                        if (strings[0].equals("new")) {
-                            AnimationFactory.newAction(p, strings[1]);
-                            return true;
-                        } else if (strings[0].equals("delete")) {
-                            AnimationFactory.deleteAction(p, Integer.parseInt(strings[1]));
-                            return true;
-                        }
-                    } else if (strings.length == 4) {
-                        if (strings[0].equals("set")) {
-                            if (strings[1].equals("frame")) {
-                                AnimationFactory.setActionFrame(p, Integer.parseInt(strings[2]), Integer.parseInt(strings[3]));
-                                return true;
-                            } else if (strings[1].equals("target")) {
-                                AnimationFactory.setActionTarget(p, Integer.parseInt(strings[2]), strings[3]);
-                                return true;
-                            }
-                        }
-                    }
-                    showActionsHelp(p);
+                    success = manageBuildingActions(p, strings);
                     break;
                 case STATUS_ANIMATION_SETUP:
-                    if (strings.length == 1) {
-                        if (strings[0].equals("origin")) {
-                            AnimationFactory.setAnimationOrigin(p);
-                            return true;
-                        } else if (strings[0].equals("info")) {
-                            AnimationFactory.animationInfo(p);
-                            return true;
-                        } else if (strings[0].equals("finish")) {
-                            AnimationFactory.saveAnimationData(p);
-                            return true;
-                        }
-                    } else if ((strings.length == 2) && (!(strings[0].equals("description")))) {
-                        if (strings[0].equals("name")) {
-                            AnimationFactory.setAnimationName(p, strings[1]);
-                            return true;
-                        } else if (strings[0].equals("type")) {
-                            AnimationFactory.setAnimationType(p, strings[1]);
-                            return true;
-                        }
-                    } else if (strings[0].equals("description")) {
-                        AnimationFactory.setAnimationDescription(p, strings);
-                        return true;
-                    }
-                    showAnimationHelp(p);
+                    success = manageAnimationSetup(p, strings);
                     break;
                 default:
-                    return false;
+                    success = false;
             }
         } catch (Exception ex) {
             p.sendMessage(ChatColor.RED + "Error parsing command!");
         }
 
+        return success;
+    }
+
+    /*
+     * AUTOMATIONS
+     */
+    private boolean manageAutomation(Player p, String[] strings) {
+
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "auto frames <one-time|two-way|loop> <#speed in system ticks>" + ChatColor.RESET + " - automatically creates all the frames needed for the stored clipboards, giving a constant frame duration of #speed. If creating a two-way animation, adds a speed * 10 pause before rolling the animation back to top.");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "auto triggers <shape|chat> [chat command] [#activation radius]" + ChatColor.RESET + " - automatically creates the needed triggers of the given type. The chat command and radius are oprional");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "auto actions <move>" + ChatColor.RESET + " - creates the needed actions");
+
+        boolean success = false;
+        try {
+            if (strings[1].equals("frames")) {
+                success = AnimationFactory.automateFrames(p, strings[2], Integer.parseInt(strings[3]));
+            }
+            if (strings[1].equals("triggers")) {
+                success = AnimationFactory.automateTriggers(p, strings);
+            }
+            if (strings[1].equals("actions")) {
+                success = AnimationFactory.automateActions(p, strings[2]);
+            }
+        } catch (Exception ex) {
+        }
+
+        if (!success) {
+            showAutomationHelp(p);
+        }
+        return success;
+    }
+
+    private boolean manageAutomationSwitch(Player p, String newStatus) {
+        if (newStatus.equals("frames")) {
+            AnimationFactory.setAutomationState(AnimationFactory.AutomationState.STATUS_AUTO_FRAMES);
+//            p.sendMessage(ChatColor.DARK_PURPLE + "Automation set to Frame building");
+            return true;
+        } else if (newStatus.equals("triggers")) {
+            AnimationFactory.setAutomationState(AnimationFactory.AutomationState.STATUS_AUTO_TRIGGERS);
+//            p.sendMessage(ChatColor.DARK_PURPLE + "Automation set to Trigger building");
+            return true;
+        } else if (newStatus.equals("actions")) {
+            AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_BUILDING_FRAME);
+//            p.sendMessage(ChatColor.DARK_PURPLE + "Automation set to Action building");
+            return true;
+        }
         return false;
+    }
+
+    /*
+     *
+     */
+    private void showGeneralHelp(Player p) {
+        switch (AnimationFactory.getStatus()) {
+            case STATUS_STORING_CLIPS:
+                showClipHelp(p);
+                break;
+            case STATUS_BUILDING_FRAME:
+                showFramesHelp(p);
+                break;
+            case STATUS_BUILDING_TRIGGER:
+                showTriggersHelp(p);
+                break;
+            case STATUS_ANIMATION_SETUP:
+                showAnimationHelp(p);
+                break;
+            case STATUS_BUILDING_ACTIONS:
+                showActionsHelp(p);
+                break;
+            default:
+                p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "MCMEAnimations commands usage:");
+                p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "?" + ChatColor.RESET + " - Show help on the current status");
+                p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "reset" + ChatColor.RESET + " - Reset the plugin status and reload the animation configuration files");
+                p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "switch" + ChatColor.RESET + "" + ChatColor.AQUA + " <clipboards|animation|frames|triggers|actions|idle>" + ChatColor.RESET + " - Switch plugin mode");
+        }
+    }
+
+    private void showPluginStatus(Player p) {
+        switch (AnimationFactory.getStatus()) {
+            case STATUS_STORING_CLIPS:
+                p.sendMessage(ChatColor.AQUA + "Storing Clipboards");
+                break;
+            case STATUS_BUILDING_FRAME:
+                p.sendMessage(ChatColor.AQUA + "Building Animation Frames");
+                break;
+            case STATUS_BUILDING_TRIGGER:
+                p.sendMessage(ChatColor.AQUA + "Building Animation Triggers");
+                break;
+            case STATUS_ANIMATION_SETUP:
+                p.sendMessage(ChatColor.AQUA + "Setting up Animation");
+                break;
+            case STATUS_BUILDING_ACTIONS:
+                p.sendMessage(ChatColor.AQUA + "Building Animation Actions");
+                break;
+            default:
+                p.sendMessage(ChatColor.AQUA + "Plugin in Idle status");
+        }
+    }
+
+    private boolean manageAnimationSetup(Player p, String[] strings) {
+        boolean success = false;
+        if (strings.length == 1) {
+            if (strings[0].equals("origin")) {
+                AnimationFactory.setAnimationOrigin(p);
+                success = true;
+            } else if (strings[0].equals("info")) {
+                AnimationFactory.animationInfo(p);
+                success = true;
+            } else if (strings[0].equals("finish")) {
+                AnimationFactory.saveAnimationData(p);
+                success = true;
+            }
+        } else if ((strings.length == 2) && (!(strings[0].equals("description")))) {
+            if (strings[0].equals("name")) {
+                AnimationFactory.setAnimationName(p, strings[1]);
+                success = true;
+            } else if (strings[0].equals("type")) {
+                AnimationFactory.setAnimationType(p, strings[1]);
+                success = true;
+            }
+        } else if (strings[0].equals("description")) {
+            AnimationFactory.setAnimationDescription(p, strings);
+            success = true;
+        }
+        if (!success) {
+            showAnimationHelp(p);
+        }
+        return success;
+    }
+
+    private boolean manageBuildingActions(Player p, String[] strings) {
+        boolean success = false;
+        if (strings.length == 1) {
+            if (strings[0].equals("list")) {
+                AnimationFactory.listActions(p);
+                success = true;
+            }
+        } else if (strings.length == 2) {
+            if (strings[0].equals("new")) {
+                AnimationFactory.newAction(p, strings[1]);
+                success = true;
+            } else if (strings[0].equals("delete")) {
+                AnimationFactory.deleteAction(p, Integer.parseInt(strings[1]));
+                success = true;
+            }
+        } else if (strings.length == 4) {
+            if (strings[0].equals("set")) {
+                if (strings[1].equals("frame")) {
+                    AnimationFactory.setActionFrame(p, Integer.parseInt(strings[2]), Integer.parseInt(strings[3]));
+                    success = true;
+                } else if (strings[1].equals("target")) {
+                    AnimationFactory.setActionTarget(p, Integer.parseInt(strings[2]), strings[3]);
+                    success = true;
+                }
+            }
+        }
+        if (!success) {
+            showActionsHelp(p);
+        }
+        return success;
+    }
+
+    private boolean manageBuildingTriggers(Player p, String[] strings) {
+        boolean success = false;
+        if (strings.length == 1) {
+            if (strings[0].equals("list")) {
+                AnimationFactory.listTriggers(p);
+                success = true;
+            }
+        } else if (strings.length == 2) {
+            if (strings[0].equals("new")) {
+                AnimationFactory.newTrigger(p, strings[1]);
+                success = true;
+            } else if (strings[0].equals("delete")) {
+                AnimationFactory.deleteTrigger(p, Integer.parseInt(strings[1]));
+                success = true;
+            } else if (strings[0].equals("info")) {
+                success = true;
+            }
+        } else if (strings.length == 3) {
+            if (strings[0].equals("set")) {
+                if (strings[2].equals("blocks")) {
+                    AnimationFactory.setBlocksTrigger(p, Integer.parseInt(strings[1]));
+                    success = true;
+                }
+            }
+        } else if (strings.length == 4) {
+            if (strings[0].equals("set")) {
+                if (strings[1].equals("frame")) {
+                    AnimationFactory.setTriggerFrame(p, Integer.parseInt(strings[2]), Integer.parseInt(strings[3]));
+                    success = true;
+                } else {
+                    AnimationFactory.setPlayerChatTrigger(p, Integer.parseInt(strings[1]), strings[2], Double.parseDouble(strings[3]));
+                    success = true;
+                }
+            }
+        }
+        if (!success) {
+            showTriggersHelp(p);
+        }
+        return success;
+    }
+
+    private boolean manageBuildingFrames(Player p, String[] strings) {
+        boolean success = false;
+        if (strings.length == 1) {
+            if (strings[0].equals("list")) {
+                AnimationFactory.listFrames(p);
+                success = true;
+            } else if (strings[0].equals("listclips")) {
+                AnimationFactory.listClips(p);
+                success = true;
+            } else if (strings[0].equals("new")) {
+                AnimationFactory.newFrame(p);
+                success = true;
+            }
+        } else if (strings.length == 2) {
+            if (strings[0].equals("delete")) {
+                AnimationFactory.deleteFrame(p, Integer.parseInt(strings[1]));
+                success = true;
+            } else if (strings[0].equals("insert")) {
+                AnimationFactory.insertFrame(p, Integer.parseInt(strings[1]));
+                success = true;
+            }
+        } else if (strings.length == 3) {
+            if (strings[0].equals("duration")) {
+                AnimationFactory.setFrameDuration(p, Integer.parseInt(strings[1]), Integer.parseInt(strings[2]));
+                success = true;
+            } else if (strings[0].equals("clipboard")) {
+                AnimationFactory.setFrameClipboard(p, Integer.parseInt(strings[1]), strings[2]);
+                success = true;
+            }
+        }
+        if (!success) {
+            showFramesHelp(p);
+        }
+        return success;
+    }
+
+    private boolean manageStoreClips(Player p, String[] strings) {
+        boolean success = false;
+        if (strings.length == 1) {
+            if (strings[0].equals("list")) {
+                AnimationFactory.listClips(p);
+                success = true;
+            }
+        } else if (strings.length == 2) {
+            if (strings[0].equals("store")) {
+                AnimationFactory.storeClip(p, strings[1]);
+                success = true;
+            } else if (strings[0].equals("delete")) {
+                AnimationFactory.deleteClip(p, strings[1]);
+                success = true;
+            }
+        }
+        if (!success) {
+            showClipHelp(p);
+        }
+        return success;
+    }
+
+    private boolean manageSwitch(Player p, String[] strings) {
+        if (strings[1].equals("clipboards")) {
+            AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_STORING_CLIPS);
+            p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Clipboard storing mode");
+            return true;
+        } else if (strings[1].equals("animation")) {
+            AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_ANIMATION_SETUP);
+            p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Animation setup mode");
+            return true;
+        } else if (strings[1].equals("frames")) {
+            AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_BUILDING_FRAME);
+            p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Frames building mode");
+            return true;
+        } else if (strings[1].equals("triggers")) {
+            AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_BUILDING_TRIGGER);
+            p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Triggers building mode");
+            return true;
+        } else if (strings[1].equals("actions")) {
+            AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_BUILDING_ACTIONS);
+            p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Actions building mode");
+            return true;
+        } else if (strings[1].equals("idle")) {
+            AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_IDLE);
+            p.sendMessage(ChatColor.DARK_PURPLE + "Switching to Idle mode");
+            return true;
+        }
+        return false;
+    }
+
+    private void showAutomationHelp(Player p) {
+        p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "*************************");
+        p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Automation mode commands");
+        p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "*************************");
+        p.sendMessage(ChatColor.AQUA + "Available commands:");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "auto frames <one-time|two-way|loop> <#speed in system ticks>" + ChatColor.RESET + " - automatically creates all the frames needed for the stored clipboards, giving a constant frame duration of #speed. If creating a two-way animation, adds a speed * 10 pause before rolling the animation back to top.");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "auto triggers <shape|chat> [chat command] [#activation radius]" + ChatColor.RESET + " - automatically creates the needed triggers of the given type. The chat command and radius are oprional");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "auto actions <move>" + ChatColor.RESET + " - creates the needed actions");
+        p.sendMessage(ChatColor.AQUA + "Refer to the Google Doc for details.");
     }
 
     private void showClipHelp(Player p) {
