@@ -10,6 +10,7 @@ import com.mcme.marozzo.animations.MCMEAnimations;
 import com.mcme.marozzo.animations.actions.ChainAnimationAction;
 import com.mcme.marozzo.animations.actions.ExplosionAction;
 import com.mcme.marozzo.animations.actions.MovePlayersAction;
+import com.mcme.marozzo.animations.actions.PlaySoundAction;
 import com.mcme.marozzo.animations.triggers.AlwaysActiveTrigger;
 import com.mcme.marozzo.animations.triggers.BlockInteractTrigger;
 import com.mcme.marozzo.animations.triggers.PlayerChatTrigger;
@@ -151,6 +152,14 @@ public abstract class MCMEAnimation {
         return configFile.getParentFile();
     }
 
+    public Location getOrigin() {
+        return origin;
+    }
+
+    public ArrayList<MCMEAnimationFrame> getFrames() {
+        return frames;
+    }
+
     public static MCMEAnimation createInstance(File configFile) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader(configFile));
@@ -265,6 +274,15 @@ public abstract class MCMEAnimation {
                     String target = (String) actionType.get("target");
                     ChainAnimationAction caa = new ChainAnimationAction(this, frame, target);
                     MCMEAnimations.actions.add(caa);
+                }
+
+                actionType = (JSONObject) action.get("sound");
+                if(null!= actionType){
+                    int frame = ((Long) actionType.get("frame")).intValue();
+                    String sound = (String)actionType.get("sound");
+                    double radius = (Double)actionType.get("radius");
+                    PlaySoundAction psa = new PlaySoundAction(this, frame, sound, radius);
+                    MCMEAnimations.actions.add(psa);
                 }
             }
         }

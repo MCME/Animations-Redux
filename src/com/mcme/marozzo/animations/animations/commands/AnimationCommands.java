@@ -128,23 +128,6 @@ public class AnimationCommands implements CommandExecutor {
         return success;
     }
 
-    private boolean manageAutomationSwitch(Player p, String newStatus) {
-        if (newStatus.equals("frames")) {
-            AnimationFactory.setAutomationState(AnimationFactory.AutomationState.STATUS_AUTO_FRAMES);
-//            p.sendMessage(ChatColor.DARK_PURPLE + "Automation set to Frame building");
-            return true;
-        } else if (newStatus.equals("triggers")) {
-            AnimationFactory.setAutomationState(AnimationFactory.AutomationState.STATUS_AUTO_TRIGGERS);
-//            p.sendMessage(ChatColor.DARK_PURPLE + "Automation set to Trigger building");
-            return true;
-        } else if (newStatus.equals("actions")) {
-            AnimationFactory.setStatus(p, AnimationFactory.FactoryState.STATUS_BUILDING_FRAME);
-//            p.sendMessage(ChatColor.DARK_PURPLE + "Automation set to Action building");
-            return true;
-        }
-        return false;
-    }
-
     /*
      *
      */
@@ -232,6 +215,9 @@ public class AnimationCommands implements CommandExecutor {
             if (strings[0].equals("list")) {
                 AnimationFactory.listActions(p);
                 success = true;
+            } else if (strings[0].equals("listsounds")) {
+                AnimationFactory.listAvailableSounds(p);
+                success = true;
             }
         } else if (strings.length == 2) {
             if (strings[0].equals("new")) {
@@ -248,6 +234,13 @@ public class AnimationCommands implements CommandExecutor {
                     success = true;
                 } else if (strings[1].equals("target")) {
                     AnimationFactory.setActionTarget(p, Integer.parseInt(strings[2]), strings[3]);
+                    success = true;               
+                }
+            }
+        } else if (strings.length == 5) {
+            if (strings[0].equals("set")) {
+                if (strings[1].equals("sound")) {
+                    AnimationFactory.setActionSound(p, Integer.parseInt(strings[2]), strings[3], Double.parseDouble(strings[4]));
                     success = true;
                 }
             }
@@ -444,9 +437,11 @@ public class AnimationCommands implements CommandExecutor {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Building Animation Actions");
         p.sendMessage(ChatColor.AQUA + "Available commands:");
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "list" + ChatColor.RESET + " - lists the currently stored actions");
-        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "new <explosion|move-players|chain-animation>" + ChatColor.RESET + " - creates a new action of given type");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "listsounds" + ChatColor.RESET + " - lists all the available sounds");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "new <explosion|move-players|chain-animation|play-sound>" + ChatColor.RESET + " - creates a new action of given type");
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "delete <#actionID>" + ChatColor.RESET + " - deletes the action with the given ID");
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "set frame <#actionID> <#frame>" + ChatColor.RESET + " - sets the activation Frame of this action");
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "set target <#actionID> <targetname>" + ChatColor.RESET + " - sets the target animation of this action");
+        p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "set sound <#actionID> <soundName> <#sound radius>" + ChatColor.RESET + " - sets the sound for this action");
     }
 }

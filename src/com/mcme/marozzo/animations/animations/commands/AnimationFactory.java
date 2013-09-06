@@ -10,7 +10,10 @@ import com.mcme.marozzo.animations.MCMEAnimations;
 import com.mcme.marozzo.animations.actions.ChainAnimationAction;
 import com.mcme.marozzo.animations.actions.ExplosionAction;
 import com.mcme.marozzo.animations.actions.MovePlayersAction;
+import com.mcme.marozzo.animations.actions.PlaySoundAction;
+import com.mcme.marozzo.animations.animations.MCMEAnimation;
 import com.mcme.marozzo.animations.animations.MCMEAnimation.animationType;
+import com.mcme.marozzo.animations.animations.MCMEAnimationFrame;
 import com.mcme.marozzo.animations.animations.MCMEClipboardStore;
 import com.mcme.marozzo.animations.triggers.AlwaysActiveTrigger;
 import com.mcme.marozzo.animations.triggers.BlockInteractTrigger;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONArray;
@@ -102,21 +106,50 @@ public class AnimationFactory {
 
         animationName = "";
         origin = null;
+        owner = null;
+
         setStatus(null, FactoryState.STATUS_IDLE);
     }
 
-    public static boolean automateActions(Player p, String actionType){
+    public static boolean editAnimation(Player p, String animationName) {
+        clear();
+        MCMEAnimation animation = null;
+        for (MCMEAnimation a : MCMEAnimations.animations) {
+            if (a.getName().equals(animationName)) {
+                animation = a;
+            }
+        }
+        if (null == animation) {
+            p.sendMessage(ChatColor.RED + "Cannot find animation\"" + animationName + "\"!");
+            return false;
+        }
+
+        AnimationFactory.animationName = animationName;
+        AnimationFactory.animationDescription = (String) animation.getConfiguration().get("description");
+        AnimationFactory.origin = BukkitUtil.toVector(animation.getOrigin());
+        AnimationFactory.owner = p;
+        AnimationFactory.type = animation.getType();
+        ArrayList<MCMEClipboardStore> clipboards = new ArrayList<MCMEClipboardStore>();
+        MCMEClipboardStore c = new MCMEClipboardStore();
+        for (MCMEAnimationFrame f : animation.getFrames()) {
+            f.getFrameName();
+
+        }
+        return true;
+    }
+
+    public static boolean automateActions(Player p, String actionType) {
         if (frames.isEmpty()) {
             p.sendMessage(ChatColor.RED + "Animation has no frames. Create some frames before adding actions");
             return false;
         }
-        if(actionType.equals("move")){
-            for(int i=0; i<frames.size(); i++){
+        if (actionType.equals("move")) {
+            for (int i = 0; i < frames.size(); i++) {
                 newAction(p, "move-players");
                 setActionFrame(p, i, i);
             }
 
-        }else{
+        } else {
             p.sendMessage(ChatColor.RED + "Invalid action type. Available types: move");
             return false;
         }
@@ -137,14 +170,14 @@ public class AnimationFactory {
             setTriggerFrame(p, 1, frames.size() - 1);
 
         } else if (strings[2].equals("chat")) {
-            try{
+            try {
                 newTrigger(p, "player-chat");
                 setPlayerChatTrigger(p, 0, strings[3], Double.parseDouble(strings[4]));
                 setTriggerFrame(p, 0, 0);
                 newTrigger(p, "player-chat");
                 setTriggerFrame(p, 1, frames.size() - 1);
                 setPlayerChatTrigger(p, 1, strings[3], Double.parseDouble(strings[4]));
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 p.sendMessage(ChatColor.RED + "You need to specify a chat command and a duration!");
                 return false;
             }
@@ -308,6 +341,9 @@ public class AnimationFactory {
         if (actionType.equals("chain-animation")) {
             a = new ChainAnimationAction(null, -1, "");
         }
+        if (actionType.equals("play-sound")) {
+            a = new PlaySoundAction(null, -1, "", -1);
+        }
         if (null == a) {
             p.sendMessage(ChatColor.RED + "Could not create action! Available actions: <explosion|move-players>");
             return;
@@ -332,6 +368,41 @@ public class AnimationFactory {
             p.sendMessage(ChatColor.BLUE + "Action frame set.");
         } catch (Exception ex) {
             p.sendMessage(ChatColor.RED + "Could not set activation frame for action at index #" + String.valueOf(actionIndex) + "!");
+        }
+    }
+
+    public static void listAvailableSounds(Player p) {
+        p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "---------------------------");
+        p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Available Sound constants:");
+        p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "---------------------------");
+        String sounds = "";
+        for (Sound s : Sound.values()) {
+            sounds += ", " + s.toString();
+        }
+        sounds.replaceFirst(", ", "");
+        p.sendMessage(ChatColor.AQUA + sounds);
+    }
+
+    public static void setActionSound(Player p, int actionIndex, String soundName, double radius) {
+        try {
+            AnimationAction a = actions.get(actionIndex);
+            if (a instanceof PlaySoundAction) {
+                try {
+                    Sound s = Sound.valueOf(soundName.toUpperCase());
+                    if (s != null) {
+                        ((PlaySoundAction) a).setSound(soundName);
+                        ((PlaySoundAction) a).setRadius(radius);
+                    }
+                } catch (Exception ex) {
+                    p.sendMessage(ChatColor.RED + "Sound " + soundName + " not found! For a list of available sounds, use /manage soudlist.");
+                    return;
+                }
+                p.sendMessage(ChatColor.BLUE + "Action frame set.");
+            } else {
+                p.sendMessage(ChatColor.RED + "This action is not a Play Sound action!");
+            }
+        } catch (Exception ex) {
+            p.sendMessage(ChatColor.RED + "Could not set sound for action at index #" + String.valueOf(actionIndex) + "!");
         }
     }
 
