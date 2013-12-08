@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.actions;
 
 import co.mcme.animations.AnimationAction;
@@ -15,7 +11,7 @@ import org.json.simple.JSONObject;
  */
 public class ChainAnimationAction implements AnimationAction {
 
-    private MCMEAnimation parent;
+    private final MCMEAnimation parent;
     private int frame;
     private String targetName;
 
@@ -25,13 +21,12 @@ public class ChainAnimationAction implements AnimationAction {
         this.targetName = targetName;
     }
 
+    @Override
     public boolean check() {
-        if (parent.getCurrentFrame() == frame) {
-            return true;
-        }
-        return false;
+        return parent.getCurrentFrame() == frame;
     }
 
+    @Override
     public void performAction() {
         for (MCMEAnimation a : MCMEAnimations.animations) {
             if (a.getName().equals(targetName)) {
@@ -40,14 +35,17 @@ public class ChainAnimationAction implements AnimationAction {
         }
     }
 
+    @Override
     public int getFrame() {
         return frame;
     }
 
+    @Override
     public void setFrame(int frame) {
         this.frame = frame;
     }
 
+    @Override
     public String getAnimationName() {
         return parent.getName();
     }
@@ -60,6 +58,7 @@ public class ChainAnimationAction implements AnimationAction {
         targetName = target;
     }
 
+    @Override
     public JSONObject toJSON() {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
@@ -74,7 +73,8 @@ public class ChainAnimationAction implements AnimationAction {
         return "Chain Animation action";
     }
 
+    @Override
     public String toHtml() {
-        return String.format(template, toString(), "Start "+targetName, "on frame #"+String.valueOf(frame));
+        return String.format(template, toString(), "Start " + targetName, "on frame #" + String.valueOf(frame));
     }
 }

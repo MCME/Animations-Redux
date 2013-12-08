@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.actions;
 
 import co.mcme.animations.AnimationAction;
@@ -15,7 +11,7 @@ import org.json.simple.JSONObject;
  */
 public class ExplosionAction implements AnimationAction {
 
-    private MCMEAnimation parent;
+    private final MCMEAnimation parent;
     private Vector epicenter;
     private int frame;
 
@@ -24,30 +20,33 @@ public class ExplosionAction implements AnimationAction {
         this.frame = frame;
     }
 
+    @Override
     public boolean check() {
-        if (parent.getCurrentFrame() == frame) {
-            return true;
-        }
-        return false;
+        return parent.getCurrentFrame() == frame;
     }
 
+    @Override
     public void performAction() {
         epicenter = parent.getBounds().getCenter();
         parent.getWorld().createExplosion(epicenter.getX(), epicenter.getY(), epicenter.getZ(), 0);
     }
 
+    @Override
     public int getFrame() {
         return frame;
     }
 
+    @Override
     public void setFrame(int frame) {
         this.frame = frame;
     }
 
+    @Override
     public String getAnimationName() {
         return parent.getName();
     }
 
+    @Override
     public JSONObject toJSON() {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
@@ -61,7 +60,8 @@ public class ExplosionAction implements AnimationAction {
         return "Explosion action";
     }
 
+    @Override
     public String toHtml() {
-        return String.format(template, toString(), "Create explosion centered on the shape", "on frame #"+String.valueOf(frame));
+        return String.format(template, toString(), "Create explosion centered on the shape", "on frame #" + String.valueOf(frame));
     }
 }

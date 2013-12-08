@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.triggers;
 
 import co.mcme.animations.AnimationTrigger;
@@ -21,28 +17,34 @@ public class AlwaysActiveTrigger implements AnimationTrigger {
         this.parent = parent;
     }
 
+    @Override
     public boolean check(Location location) {
         //No need to check.
         return true;
     }
 
+    @Override
     public void trigger() {
         parent.start();
     }
 
+    @Override
     public boolean check(Location location, String message) {
         //No need to check
         return true;
     }
 
+    @Override
     public int getFrame() {
         return -1;
     }
 
+    @Override
     public void setFrame(int frame) {
         //Do nothing
     }
 
+    @Override
     public void setData(Object data) {
         //Do nothing
     }
@@ -52,10 +54,12 @@ public class AlwaysActiveTrigger implements AnimationTrigger {
         return "Always active trigger";
     }
 
+    @Override
     public void setParent(MCMEAnimation parent) {
         this.parent = parent;
     }
 
+    @Override
     public JSONObject toJSON() {
         JSONObject result = new JSONObject();
         JSONObject dummy = new JSONObject();
@@ -64,10 +68,12 @@ public class AlwaysActiveTrigger implements AnimationTrigger {
         return result;
     }
 
+    @Override
     public String toHtml() {
         return String.format(template, toString(), "This animation will start on the first player joining the server", "");
     }
 
+    @Override
     public MCMEAnimation getParent() {
         return parent;
     }

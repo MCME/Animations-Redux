@@ -1,16 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.actions;
 
 import co.mcme.animations.AnimationAction;
 import co.mcme.animations.MCMEAnimations;
 import co.mcme.animations.animations.MCMEAnimation;
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
@@ -21,7 +15,7 @@ import org.json.simple.JSONObject;
  */
 public class MovePlayersAction implements AnimationAction {
 
-    private MCMEAnimation parent;
+    private final MCMEAnimation parent;
 //    private Vector direction;
     private int frame;
 
@@ -32,13 +26,12 @@ public class MovePlayersAction implements AnimationAction {
 //        this.direction = direction;
     }
 
+    @Override
     public boolean check() {
-        if (parent.getCurrentFrame() == frame) {
-            return true;
-        }
-        return false;
+        return parent.getCurrentFrame() == frame;
     }
 
+    @Override
     public void performAction() {
         for (Player p : MCMEAnimations.MCMEAnimationsInstance.getServer().getOnlinePlayers()) {
             if (p.getWorld().equals(parent.getWorld())) {
@@ -77,18 +70,22 @@ public class MovePlayersAction implements AnimationAction {
         return result;
     }
 
+    @Override
     public int getFrame() {
         return frame;
     }
 
+    @Override
     public void setFrame(int frame) {
         this.frame = frame;
     }
 
+    @Override
     public String getAnimationName() {
         return parent.getName();
     }
 
+    @Override
     public JSONObject toJSON() {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
@@ -107,6 +104,7 @@ public class MovePlayersAction implements AnimationAction {
         return "Move Players action";
     }
 
+    @Override
     public String toHtml() {
         return String.format(template, toString(), "Move players in the direction of the animation", "on frame #" + String.valueOf(frame));
     }

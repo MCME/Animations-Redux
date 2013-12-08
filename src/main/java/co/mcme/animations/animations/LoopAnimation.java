@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.animations;
 
 import co.mcme.animations.MCMEAnimations;
@@ -17,7 +13,7 @@ import java.io.File;
  */
 public class LoopAnimation extends MCMEAnimation {
 
-    private animationType type = animationType.LOOP_ANIMATION;
+    private final animationType type = animationType.LOOP_ANIMATION;
     volatile int currentFrame;
     volatile boolean shouldStop;
     volatile boolean running;
@@ -28,8 +24,8 @@ public class LoopAnimation extends MCMEAnimation {
         init();
     }
 
+    @Override
     public void start() {
-
         if (!MCMEAnimations.CurrentJobs.contains(animationName)) {
             loadFrames();
 
@@ -47,6 +43,7 @@ public class LoopAnimation extends MCMEAnimation {
         final MCMEAnimationFrame f = frames.get(currentFrame);
         MCMEAnimations.WEPlugin.getServer().getScheduler().runTaskLater(MCMEAnimations.WEPlugin, new Runnable() {
 
+            @Override
             public void run() {
 //                SamplePlugin.WEPlugin.getServer().getLogger().info("Rendering " + animationName + " frame: " + currentFrame);
                 CuboidClipboard clip = clipboards.get(currentFrame);
@@ -56,8 +53,8 @@ public class LoopAnimation extends MCMEAnimation {
 
                 shape = new CuboidRegion(BukkitUtil.toVector(origin),
                         new Vector(Math.floor(origin.getX() + clip.getWidth()),
-                        Math.floor(origin.getY() + clip.getHeight()),
-                        Math.floor(origin.getZ() + clip.getLength())));
+                                Math.floor(origin.getY() + clip.getHeight()),
+                                Math.floor(origin.getZ() + clip.getLength())));
 
                 virtual_direction = new Vector(
                         previousMin.getX() - shape.getMinimumPoint().getX(),
@@ -76,14 +73,17 @@ public class LoopAnimation extends MCMEAnimation {
 
     }
 
+    @Override
     public void stop() {
         afterJobDelegate();
     }
 
+    @Override
     public animationType getType() {
         return type;
     }
 
+    @Override
     public void afterJobDelegate() {
         //called on stop
         unloadFrames();

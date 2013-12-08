@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.animations.commands;
 
 import co.mcme.animations.MCMEAnimations;
@@ -19,6 +15,7 @@ public class AnimationCommands implements CommandExecutor {
 
     private Player p;
 
+    @Override
     public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] strings) {
         if (cs instanceof Player) {
             p = (Player) cs;
@@ -41,7 +38,6 @@ public class AnimationCommands implements CommandExecutor {
                 return true;
             }
         }
-
 
         if (null != AnimationFactory.getOwner()) {
             if (!AnimationFactory.getOwner().getDisplayName().equals(p.getDisplayName())) {
@@ -119,7 +115,7 @@ public class AnimationCommands implements CommandExecutor {
             if (strings[1].equals("actions")) {
                 success = AnimationFactory.automateActions(p, strings[2]);
             }
-        } catch (Exception ex) {
+        } catch (NumberFormatException ex) {
         }
 
         if (!success) {
@@ -234,7 +230,7 @@ public class AnimationCommands implements CommandExecutor {
                     success = true;
                 } else if (strings[1].equals("target")) {
                     AnimationFactory.setActionTarget(p, Integer.parseInt(strings[2]), strings[3]);
-                    success = true;               
+                    success = true;
                 }
             }
         } else if (strings.length == 5) {

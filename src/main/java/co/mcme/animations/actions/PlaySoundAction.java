@@ -1,13 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.actions;
 
 import co.mcme.animations.AnimationAction;
 import co.mcme.animations.MCMEAnimations;
 import co.mcme.animations.animations.MCMEAnimation;
-import co.mcme.animations.animations.WELoader;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitUtil;
 import org.bukkit.Sound;
@@ -38,6 +33,7 @@ public class PlaySoundAction implements AnimationAction {
         }
     }
 
+    @Override
     public boolean check() {
         if (parent.getCurrentFrame() == frame) {
             return true;
@@ -45,6 +41,7 @@ public class PlaySoundAction implements AnimationAction {
         return false;
     }
 
+    @Override
     public void performAction() {
         epicenter = parent.getBounds().getCenter();
         for (Player p : MCMEAnimations.MCMEAnimationsInstance.getServer().getOnlinePlayers()) {
@@ -58,10 +55,12 @@ public class PlaySoundAction implements AnimationAction {
         }
     }
 
+    @Override
     public int getFrame() {
         return frame;
     }
 
+    @Override
     public void setFrame(int frame) {
         this.frame = frame;
     }
@@ -79,10 +78,12 @@ public class PlaySoundAction implements AnimationAction {
         }
     }
 
+    @Override
     public String getAnimationName() {
         return parent.getName();
     }
 
+    @Override
     public JSONObject toJSON() {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
@@ -98,6 +99,7 @@ public class PlaySoundAction implements AnimationAction {
         return "Play Sound action";
     }
 
+    @Override
     public String toHtml() {
         return String.format(template, toString(), "Play " + theSound.toString(), " within a " + radius + " blocks radius on frame #" + String.valueOf(frame));
     }

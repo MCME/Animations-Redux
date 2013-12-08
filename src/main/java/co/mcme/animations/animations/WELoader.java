@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.animations;
 
 import co.mcme.animations.MCMEAnimations;
@@ -40,9 +36,7 @@ public class WELoader {
 
             return new CuboidRegion(v1, v2);
 
-        } catch (IOException ex) {
-            Logger.getLogger(WELoader.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DataException ex) {
+        } catch (IOException | DataException ex) {
             Logger.getLogger(WELoader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -77,9 +71,7 @@ public class WELoader {
             SchematicFormat sf = MCEditSchematicFormat.MCEDIT;
             CuboidClipboard clip = sf.load(new File(MCMEAnimations.MCMEAnimationsInstance.getDataFolder() + File.separator + "schematics" + File.separator + "animations" + File.separator + frameName + ".schematic"));
             return clip;
-        } catch (DataException ex) {
-            Logger.getLogger(WELoader.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (IOException | DataException ex) {
             Logger.getLogger(WELoader.class.getName()).log(Level.SEVERE, null, ex);
         }
 

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
@@ -24,10 +20,10 @@ import org.bukkit.entity.Player;
  */
 public class WorldEditHelper {
 
-    private WorldEditPlugin worldEditPlugin;
-    private WorldEdit worldEdit;
-    private LocalPlayer localPlayer;
-    private Player player;
+    private final WorldEditPlugin worldEditPlugin;
+    private final WorldEdit worldEdit;
+    private final LocalPlayer localPlayer;
+    private final Player player;
 
     public WorldEditHelper(Player player) {
         this.worldEditPlugin = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
@@ -89,6 +85,4 @@ public class WorldEditHelper {
 //
 //        return affected;
 //}
-
-
 }

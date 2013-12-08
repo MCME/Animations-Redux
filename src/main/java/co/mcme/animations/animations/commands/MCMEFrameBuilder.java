@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package co.mcme.animations.animations.commands;
 
 import co.mcme.animations.animations.MCMEClipboardStore;

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.animations.commands;
 
 import co.mcme.animations.AnimationAction;
@@ -70,10 +66,10 @@ public class AnimationFactory {
     private static Vector origin;
     private static animationType type;
     private static Player owner;
-    private static ArrayList<MCMEClipboardStore> clips = new ArrayList<MCMEClipboardStore>();
-    private static ArrayList<MCMEFrameBuilder> frames = new ArrayList<MCMEFrameBuilder>();
-    private static ArrayList<AnimationTrigger> triggers = new ArrayList<AnimationTrigger>();
-    private static ArrayList<AnimationAction> actions = new ArrayList<AnimationAction>();
+    private static final ArrayList<MCMEClipboardStore> clips = new ArrayList();
+    private static final ArrayList<MCMEFrameBuilder> frames = new ArrayList();
+    private static final ArrayList<AnimationTrigger> triggers = new ArrayList();
+    private static final ArrayList<AnimationAction> actions = new ArrayList();
     private static FactoryState status = FactoryState.STATUS_IDLE;
     private static AutomationState automationStatus = AutomationState.STATUS_NO_AUTOMATION;
 
@@ -129,7 +125,7 @@ public class AnimationFactory {
         AnimationFactory.origin = BukkitUtil.toVector(animation.getOrigin());
         AnimationFactory.owner = p;
         AnimationFactory.type = animation.getType();
-        ArrayList<MCMEClipboardStore> clipboards = new ArrayList<MCMEClipboardStore>();
+        ArrayList<MCMEClipboardStore> clipboards = new ArrayList();
         MCMEClipboardStore c = new MCMEClipboardStore();
         for (MCMEAnimationFrame f : animation.getFrames()) {
             f.getFrameName();
@@ -177,7 +173,7 @@ public class AnimationFactory {
                 newTrigger(p, "player-chat");
                 setTriggerFrame(p, 1, frames.size() - 1);
                 setPlayerChatTrigger(p, 1, strings[3], Double.parseDouble(strings[4]));
-            } catch (Exception ex) {
+            } catch (NumberFormatException ex) {
                 p.sendMessage(ChatColor.RED + "You need to specify a chat command and a duration!");
                 return false;
             }
@@ -498,7 +494,7 @@ public class AnimationFactory {
                 return;
             }
 
-            ArrayList<Vector> locs = new ArrayList<Vector>();
+            ArrayList<Vector> locs = new ArrayList();
 
             int x1 = (int) s.getMinimumPoint().getX();
             int y1 = (int) s.getMinimumPoint().getY();
@@ -776,9 +772,7 @@ public class AnimationFactory {
             File data = new File(animationFolder + File.separator + name + ".schematic");
             sf.save(clip, data);
             //p.sendMessage("File " + data.getAbsolutePath() + " saved!");
-        } catch (DataException ex) {
-            Logger.getLogger(AnimationFactory.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (IOException | DataException ex) {
             Logger.getLogger(AnimationFactory.class.getName()).log(Level.SEVERE, null, ex);
         }
 

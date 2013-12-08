@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.animations;
 
 import co.mcme.animations.MCMEAnimations;
@@ -16,7 +12,7 @@ import java.io.File;
  */
 public class TwoWayAnimation extends MCMEAnimation {
 
-    private animationType type = animationType.REVERSIBLE_ANIMATION;
+    private final animationType type = animationType.REVERSIBLE_ANIMATION;
     volatile int currentFrame;
     private int direction = 0;
 
@@ -26,6 +22,7 @@ public class TwoWayAnimation extends MCMEAnimation {
         init();
     }
 
+    @Override
     public void start() {
 //        SamplePlugin.WEPlugin.getServer().getLogger().info("Starting two-way animation: "+animationName);
 
@@ -42,7 +39,7 @@ public class TwoWayAnimation extends MCMEAnimation {
                     final int temp = shadowFrame;
                     final int clipboardIndex = i;
                     MCMEAnimations.WEPlugin.getServer().getScheduler().runTaskLater(MCMEAnimations.WEPlugin, new Runnable() {
-
+                        @Override
                         public void run() {
                             CuboidClipboard clip = clipboards.get(clipboardIndex);
                             WELoader.placeFrame(origin, clip, localWorldName);
@@ -82,6 +79,7 @@ public class TwoWayAnimation extends MCMEAnimation {
                     final int clipboardIndex = i;
                     MCMEAnimations.WEPlugin.getServer().getScheduler().runTaskLater(MCMEAnimations.WEPlugin, new Runnable() {
 
+                        @Override
                         public void run() {
                             CuboidClipboard clip = clipboards.get(clipboardIndex);
                             WELoader.placeFrame(origin, clip, localWorldName);
@@ -112,6 +110,7 @@ public class TwoWayAnimation extends MCMEAnimation {
             }
             MCMEAnimations.WEPlugin.getServer().getScheduler().runTaskLater(MCMEAnimations.WEPlugin, new Runnable() {
 
+                @Override
                 public void run() {
                     afterJobDelegate();
                 }
@@ -120,13 +119,16 @@ public class TwoWayAnimation extends MCMEAnimation {
         }
     }
 
+    @Override
     public void stop() {
     }
 
+    @Override
     public animationType getType() {
         return type;
     }
 
+    @Override
     public void afterJobDelegate() {
         unloadFrames();
         MCMEAnimations.CurrentJobs.remove(animationName);

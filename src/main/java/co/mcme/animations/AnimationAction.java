@@ -1,11 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations;
 
 import org.json.simple.JSONObject;
-
 
 /**
  *
@@ -13,7 +8,7 @@ import org.json.simple.JSONObject;
  */
 public interface AnimationAction {
 
-    public static String template ="<tr><td>%1$s</td><td>%2$s</td><td style=\"text-align:right\">%3$s</td></tr>";
+    public static String template = "<tr><td>%1$s</td><td>%2$s</td><td style=\"text-align:right\">%3$s</td></tr>";
 
     public boolean check();
 

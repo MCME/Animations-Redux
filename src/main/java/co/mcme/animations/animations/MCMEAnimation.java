@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.animations;
 
 import co.mcme.animations.AnimationAction;
@@ -102,8 +98,8 @@ public abstract class MCMEAnimation {
     protected String animationDescription;
     protected String localWorldName;
     protected JSONObject animationConfiguration;
-    protected ArrayList<MCMEAnimationFrame> frames = new ArrayList<MCMEAnimationFrame>();
-    protected ArrayList<CuboidClipboard> clipboards = new ArrayList<CuboidClipboard>();
+    protected ArrayList<MCMEAnimationFrame> frames = new ArrayList();
+    protected ArrayList<CuboidClipboard> clipboards = new ArrayList();
     protected Location origin;
     protected CuboidRegion shape;
     protected volatile com.sk89q.worldedit.Vector virtual_direction;

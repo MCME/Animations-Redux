@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.triggers;
 
 import co.mcme.animations.AnimationTrigger;
@@ -29,18 +25,22 @@ public class PlayerChatTrigger implements AnimationTrigger {
         this.message = message;
     }
 
+    @Override
     public int getFrame() {
         return frame;
     }
 
+    @Override
     public boolean check(Location location) {
         return false;
     }
 
+    @Override
     public void trigger() {
         parent.start();
     }
 
+    @Override
     public boolean check(Location location, String message) {
 
         double distance = MCMEAnimations.distance3D(BukkitUtil.toVector(location), parent.getCenter());
@@ -55,10 +55,12 @@ public class PlayerChatTrigger implements AnimationTrigger {
         return false;
     }
 
+    @Override
     public void setFrame(int frame) {
         this.frame = frame;
     }
 
+    @Override
     public void setData(Object data) {
         if (data instanceof Object[]) {
             if (((Object[]) data).length == 2) {
@@ -76,10 +78,12 @@ public class PlayerChatTrigger implements AnimationTrigger {
         return "Player chat trigger";
     }
 
+    @Override
     public void setParent(MCMEAnimation parent) {
         this.parent = parent;
     }
 
+    @Override
     public JSONObject toJSON() {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
@@ -90,10 +94,12 @@ public class PlayerChatTrigger implements AnimationTrigger {
         return result;
     }
 
+    @Override
     public String toHtml() {
-        return String.format(template, toString(), "activated by \""+message+"\" chat command", "on frame #"+String.valueOf(frame));
+        return String.format(template, toString(), "activated by \"" + message + "\" chat command", "on frame #" + String.valueOf(frame));
     }
 
+    @Override
     public MCMEAnimation getParent() {
         return parent;
     }

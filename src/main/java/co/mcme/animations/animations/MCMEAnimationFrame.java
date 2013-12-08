@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package co.mcme.animations.animations;
 
 /**
@@ -11,8 +6,8 @@ package co.mcme.animations.animations;
  */
 public class MCMEAnimationFrame {
 
-    private String frameName;
-    private long Duration;
+    private final String frameName;
+    private final long Duration;
 
     public long getDuration() {
         return Duration;

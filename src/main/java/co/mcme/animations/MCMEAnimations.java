@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations;
 
 import co.mcme.animations.animations.MCMEAnimation;
@@ -32,14 +28,15 @@ public class MCMEAnimations extends JavaPlugin {
 //    public static Player WEPlayer;
     public static WorldEditPlugin WEPlugin;
     public static MCMEAnimations MCMEAnimationsInstance;
-    public static HashSet<String> CurrentJobs = new HashSet<String>();
-    public static ArrayList<MCMEAnimation> animations = new ArrayList<MCMEAnimation>();
-    public static ArrayList<AnimationTrigger> triggers = new ArrayList<AnimationTrigger>();
-    public static ArrayList<AnimationAction> actions = new ArrayList<AnimationAction>();
+    public static HashSet<String> CurrentJobs = new HashSet();
+    public static ArrayList<MCMEAnimation> animations = new ArrayList();
+    public static ArrayList<AnimationTrigger> triggers = new ArrayList();
+    public static ArrayList<AnimationAction> actions = new ArrayList();
 
-    public static MCMEAnimations getInstance(){
-        return (MCMEAnimations)MCMEAnimations.WEPlugin.getServer().getPluginManager().getPlugin("MCMEAnimations");
+    public static MCMEAnimations getInstance() {
+        return (MCMEAnimations) MCMEAnimations.WEPlugin.getServer().getPluginManager().getPlugin("MCMEAnimations");
     }
+
     @Override
     public void onDisable() {
         getLogger().info("MCMEAnimations disabled");
@@ -62,8 +59,9 @@ public class MCMEAnimations extends JavaPlugin {
         getLogger().log(Level.INFO, "{0} version {1}is enabled!", new Object[]{pdfFile.getName(), pdfFile.getVersion()});
 
         final Plugin plugin = this;
-        getServer().getScheduler().runTaskLater(this, new Runnable(){
+        getServer().getScheduler().runTaskLater(this, new Runnable() {
 
+            @Override
             public void run() {
                 pm.registerEvents(triggerListener, plugin);
                 getLogger().info("TriggerListener successfully registered.");
@@ -76,11 +74,12 @@ public class MCMEAnimations extends JavaPlugin {
         animations.clear();
         actions.clear();
         File animationsPath = new File(MCMEAnimationsInstance.getDataFolder() + File.separator + "schematics" + File.separator + "animations");
-        if(!animationsPath.exists()){
+        if (!animationsPath.exists()) {
             animationsPath.mkdirs();
         }
         File[] folders = animationsPath.listFiles(new FileFilter() {
 
+            @Override
             public boolean accept(File pathname) {
                 return pathname.isDirectory();
             }
@@ -89,6 +88,7 @@ public class MCMEAnimations extends JavaPlugin {
         for (File f : folders) {
             File[] confFile = f.listFiles(new FileFilter() {
 
+                @Override
                 public boolean accept(File pathname) {
                     return pathname.getAbsolutePath().endsWith(".json");
                 }
@@ -100,21 +100,18 @@ public class MCMEAnimations extends JavaPlugin {
             try {
                 animations.add(MCMEAnimation.createInstance(confFile[0]));
 
-            } catch (IOException ex) {
-                Logger.getLogger(MCMEAnimations.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ParseException ex) {
+            } catch (IOException | ParseException ex) {
                 Logger.getLogger(MCMEAnimations.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
     //UTILITIES
-
-    public static double distance3D(Vector pos1, Vector pos2){
+    public static double distance3D(Vector pos1, Vector pos2) {
         return Math.sqrt(
-                Math.pow(pos1.getX() - pos2.getX(), 2) +
-                Math.pow(pos1.getY() - pos2.getY(), 2) +
-                Math.pow(pos1.getZ() - pos2.getZ(), 2)
-                );
+                Math.pow(pos1.getX() - pos2.getX(), 2)
+                + Math.pow(pos1.getY() - pos2.getY(), 2)
+                + Math.pow(pos1.getZ() - pos2.getZ(), 2)
+        );
     }
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.animations.commands;
 
 import co.mcme.animations.MCMEAnimations;
@@ -24,8 +20,8 @@ import org.bukkit.entity.Player;
  */
 public class AnimationManager implements CommandExecutor {
 
-    public String exportTemplate =
-            "<html class=\"wf-droidsans-n4-active wf-active\">"
+    public String exportTemplate
+            = "<html class=\"wf-droidsans-n4-active wf-active\">"
             + "<head>"
             + "<link href=\"animations.css\" rel=\"stylesheet\" type=\"text/css\">"
             + "<link rel=\"stylesheet\" href=\"http://fonts.googleapis.com/css?family=Droid+Sans\">"
@@ -148,12 +144,9 @@ public class AnimationManager implements CommandExecutor {
             if (s != null) {
                 p.playSound(p.getLocation(), s, Float.valueOf(strings[2]), Float.valueOf(strings[3]));
                 p.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Sound played");
-                return;
             }
         } catch (NumberFormatException ex) {
             p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Invalid float value!");
-        } catch (Exception ex) {
-            p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "Sound " + strings[1] + " not found! For a list of available sounds, use /manage soudlist.");
         }
     }
 

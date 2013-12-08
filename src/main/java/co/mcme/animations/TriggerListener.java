@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations;
 
 import co.mcme.animations.triggers.AlwaysActiveTrigger;
@@ -30,8 +26,8 @@ public class TriggerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) ||
-            event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)
+                || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 //        MCMEAnimations.WEPlayer = event.getPlayer();
             for (AnimationTrigger at : MCMEAnimations.triggers) {
                 if (at instanceof BlockInteractTrigger) {

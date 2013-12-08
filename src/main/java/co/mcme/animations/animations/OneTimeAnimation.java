@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.animations;
 
 import co.mcme.animations.MCMEAnimations;
@@ -17,7 +13,7 @@ import java.io.File;
  */
 public class OneTimeAnimation extends MCMEAnimation {
 
-    private animationType type = animationType.ONE_TIME_ANIMATION;
+    private final animationType type = animationType.ONE_TIME_ANIMATION;
     volatile int currentFrame;
 
     public OneTimeAnimation(File configFile) {
@@ -26,6 +22,7 @@ public class OneTimeAnimation extends MCMEAnimation {
         init();
     }
 
+    @Override
     public void start() {
 //        SamplePlugin.WEPlugin.getServer().getLogger().info("Starting one-time animation: "+animationName);
 
@@ -42,6 +39,7 @@ public class OneTimeAnimation extends MCMEAnimation {
                 final int clipboardIndex = i;
                 MCMEAnimations.WEPlugin.getServer().getScheduler().runTaskLater(MCMEAnimations.WEPlugin, new Runnable() {
 
+                    @Override
                     public void run() {
                         CuboidClipboard clip = clipboards.get(clipboardIndex);
                         WELoader.placeFrame(origin, clip, localWorldName);
@@ -50,13 +48,13 @@ public class OneTimeAnimation extends MCMEAnimation {
 
                         shape = new CuboidRegion(BukkitUtil.toVector(origin),
                                 new Vector(Math.floor(origin.getX() + clip.getWidth()),
-                                Math.floor(origin.getY() + clip.getHeight()),
-                                Math.floor(origin.getZ() + clip.getLength())));
+                                        Math.floor(origin.getY() + clip.getHeight()),
+                                        Math.floor(origin.getZ() + clip.getLength())));
 
                         virtual_direction = new Vector(
-                                    previousMin.getX() - shape.getMinimumPoint().getX(),
-                                    previousMin.getY() - shape.getMinimumPoint().getY(),
-                                    previousMin.getZ() - shape.getMinimumPoint().getZ());
+                                previousMin.getX() - shape.getMinimumPoint().getX(),
+                                previousMin.getY() - shape.getMinimumPoint().getY(),
+                                previousMin.getZ() - shape.getMinimumPoint().getZ());
 
                         currentFrame = temp;
                         executeActions();
@@ -67,6 +65,7 @@ public class OneTimeAnimation extends MCMEAnimation {
             }
             MCMEAnimations.WEPlugin.getServer().getScheduler().runTaskLater(MCMEAnimations.WEPlugin, new Runnable() {
 
+                @Override
                 public void run() {
                     afterJobDelegate();
                 }
@@ -74,13 +73,16 @@ public class OneTimeAnimation extends MCMEAnimation {
         }
     }
 
+    @Override
     public void stop() {
     }
 
+    @Override
     public animationType getType() {
         return type;
     }
 
+    @Override
     public void afterJobDelegate() {
         unloadFrames();
         MCMEAnimations.CurrentJobs.remove(animationName);

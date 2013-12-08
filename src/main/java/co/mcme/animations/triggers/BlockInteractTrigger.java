@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.mcme.animations.triggers;
 
 import co.mcme.animations.AnimationTrigger;
@@ -20,7 +16,7 @@ public class BlockInteractTrigger implements AnimationTrigger {
 
     MCMEAnimation parent;
     int frame;
-    ArrayList<Vector> triggerLocation = new ArrayList<Vector>();
+    ArrayList<Vector> triggerLocation = new ArrayList();
 
     public BlockInteractTrigger(MCMEAnimation parent, ArrayList<Vector> loc, int frame) {
         this.parent = parent;
@@ -28,10 +24,12 @@ public class BlockInteractTrigger implements AnimationTrigger {
         this.triggerLocation = loc;
     }
 
+    @Override
     public int getFrame() {
         return frame;
     }
 
+    @Override
     public boolean check(Location location) {
 //        SamplePlugin.WEPlugin.getServer().getLogger().info("--------------------");
 //        SamplePlugin.WEPlugin.getServer().getLogger().info("Checking block trigger... ");
@@ -51,18 +49,22 @@ public class BlockInteractTrigger implements AnimationTrigger {
         return false;
     }
 
+    @Override
     public void trigger() {
         parent.start();
     }
 
+    @Override
     public boolean check(Location location, String message) {
         return false;
     }
 
+    @Override
     public void setFrame(int frame) {
         this.frame = frame;
     }
 
+    @Override
     public void setData(Object data) {
         if (data instanceof ArrayList) {
             try {
@@ -78,10 +80,12 @@ public class BlockInteractTrigger implements AnimationTrigger {
         return "Block interaction trigger";
     }
 
+    @Override
     public void setParent(MCMEAnimation parent) {
         this.parent = parent;
     }
 
+    @Override
     public JSONObject toJSON() {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
@@ -101,10 +105,12 @@ public class BlockInteractTrigger implements AnimationTrigger {
         return result;
     }
 
+    @Override
     public String toHtml() {
-        return String.format(template, toString(), "Block interaction on "+String.valueOf(triggerLocation.size())+" blocks", "on frame #"+String.valueOf(frame));
+        return String.format(template, toString(), "Block interaction on " + String.valueOf(triggerLocation.size()) + " blocks", "on frame #" + String.valueOf(frame));
     }
 
+    @Override
     public MCMEAnimation getParent() {
         return parent;
     }
