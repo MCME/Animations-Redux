@@ -124,12 +124,12 @@ public class AnimationManager implements CommandExecutor {
         p.sendMessage(ChatColor.BLUE + "-------=====================-------");
     }
 
-    private void deleteAnimation(Player p, String animationName, AnimationFactory factory) {
+    private void deleteAnimation(Player p, String animationName) {
         for (MCMEAnimation a : MCMEAnimations.animations) {
             if (a.getName().equals(animationName)) {
                 try {
                     MCMEAnimations.animations.remove(a);
-                    factory.delete(a.getAnimationRoot());
+                    delete(a.getAnimationRoot());
                     MCMEAnimations.MCMEAnimationsInstance.loadAnimations();
                     p.sendMessage(ChatColor.BLUE + a.getName() + " successfully deleted from the server.");
                 } catch (IOException ex) {
@@ -185,6 +185,36 @@ public class AnimationManager implements CommandExecutor {
         } catch (IOException ex) {
             p.sendMessage(ChatColor.RED + "Error saving file!");
             Logger.getLogger(AnimationManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void delete(File file) throws IOException {
+
+        if (file.isDirectory()) {
+            //directory is empty, then delete it
+            if (file.list().length == 0) {
+                file.delete();
+                System.out.println("Directory is deleted : " + file.getAbsolutePath());
+            } else {
+                //list all the directory contents
+                String files[] = file.list();
+                for (String temp : files) {
+                    //construct the file structure
+                    File fileDelete = new File(file, temp);
+                    //recursive delete
+                    delete(fileDelete);
+                }
+
+                //check the directory again, if empty then delete it
+                if (file.list().length == 0) {
+                    file.delete();
+                    System.out.println("Directory is deleted : " + file.getAbsolutePath());
+                }
+            }
+        } else {
+            //if file, then delete it
+            file.delete();
+            System.out.println("File is deleted : " + file.getAbsolutePath());
         }
     }
 }
