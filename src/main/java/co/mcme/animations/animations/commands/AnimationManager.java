@@ -124,12 +124,12 @@ public class AnimationManager implements CommandExecutor {
         p.sendMessage(ChatColor.BLUE + "-------=====================-------");
     }
 
-    private void deleteAnimation(Player p, String animationName) {
+    private void deleteAnimation(Player p, String animationName, AnimationFactory factory) {
         for (MCMEAnimation a : MCMEAnimations.animations) {
             if (a.getName().equals(animationName)) {
                 try {
                     MCMEAnimations.animations.remove(a);
-                    AnimationFactory.delete(a.getAnimationRoot());
+                    factory.delete(a.getAnimationRoot());
                     MCMEAnimations.MCMEAnimationsInstance.loadAnimations();
                     p.sendMessage(ChatColor.BLUE + a.getName() + " successfully deleted from the server.");
                 } catch (IOException ex) {

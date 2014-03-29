@@ -88,28 +88,28 @@ public class AnimationFactory {
     private static FactoryState status = FactoryState.STATUS_IDLE;
     private static AutomationState automationStatus = AutomationState.STATUS_NO_AUTOMATION;
 
-    public static FactoryState getStatus() {
+    public FactoryState getStatus() {
         return status;
     }
 
-    public static void setStatus(Player p, FactoryState factoryStatus) {
+    public void setStatus(Player p, FactoryState factoryStatus) {
         status = factoryStatus;
         owner = p;
     }
 
-    public static AutomationState getAutomationStatus() {
+    public AutomationState getAutomationStatus() {
         return automationStatus;
     }
 
-    public static void setAutomationState(AutomationState status) {
+    public void setAutomationState(AutomationState status) {
         automationStatus = status;
     }
 
-    public static Player getOwner() {
+    public Player getOwner() {
         return owner;
     }
 
-    public static void clear() {
+    public void clear() {
         clips.clear();
         frames.clear();
         triggers.clear();
@@ -122,7 +122,7 @@ public class AnimationFactory {
         setStatus(null, FactoryState.STATUS_IDLE);
     }
 
-    public static boolean editAnimation(Player p, String animationName) {
+    public boolean editAnimation(Player p, String animationName) {
         clear();
         MCMEAnimation animation = null;
         for (MCMEAnimation a : MCMEAnimations.animations) {
@@ -149,7 +149,7 @@ public class AnimationFactory {
         return true;
     }
 
-    public static boolean automateActions(Player p, String actionType) {
+    public boolean automateActions(Player p, String actionType) {
         if (frames.isEmpty()) {
             p.sendMessage(ChatColor.RED + "Animation has no frames. Create some frames before adding actions");
             return false;
@@ -169,7 +169,7 @@ public class AnimationFactory {
         return true;
     }
 
-    public static boolean automateTriggers(Player p, String[] strings) {
+    public boolean automateTriggers(Player p, String[] strings) {
         if (frames.isEmpty()) {
             p.sendMessage(ChatColor.RED + "Animation has no frames. Create some frames before adding triggers");
             return false;
@@ -201,7 +201,7 @@ public class AnimationFactory {
         return true;
     }
 
-    public static boolean automateFrames(Player p, String type, int delay) {
+    public boolean automateFrames(Player p, String type, int delay) {
 
         if (clips.isEmpty()) {
             p.sendMessage(ChatColor.RED + "Clipboard storage is empty. Store some clipboards before creating the frames");
@@ -267,7 +267,7 @@ public class AnimationFactory {
         return true;
     }
 
-    public static boolean deleteClip(Player p, String frameName) {
+    public boolean deleteClip(Player p, String frameName) {
         for (MCMEClipboardStore cs : clips) {
             if (cs.getSchematicName().equals(frameName)) {
                 if (cs.getUses() == 0) {
@@ -283,7 +283,7 @@ public class AnimationFactory {
         return false;
     }
 
-    public static boolean storeClip(Player p, String frameName) {
+    public boolean storeClip(Player p, String frameName) {
         LocalSession s = MCMEAnimations.WEPlugin.getSession(p);
         try {
 //            Selection sel = MCMEAnimations.WEPlugin.getSelection(p);
@@ -321,7 +321,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void listTriggers(Player p) {
+    public void listTriggers(Player p) {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Currently stored triggers:");
         for (int i = 0; i < triggers.size(); i++) {
             AnimationTrigger t = triggers.get(i);
@@ -333,7 +333,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void listActions(Player p) {
+    public void listActions(Player p) {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Currently stored actions:");
         for (int i = 0; i < actions.size(); i++) {
             AnimationAction a = actions.get(i);
@@ -341,7 +341,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void newAction(Player p, String actionType) {
+    public void newAction(Player p, String actionType) {
         AnimationAction a = null;
         if (actionType.equals("explosion")) {
             a = new ExplosionAction(null, -1);
@@ -363,7 +363,7 @@ public class AnimationFactory {
         p.sendMessage(ChatColor.BLUE + a.toString() + " created at index #" + String.valueOf(actions.size() - 1));
     }
 
-    public static void deleteAction(Player p, int index) {
+    public void deleteAction(Player p, int index) {
         try {
             actions.remove(index);
             p.sendMessage(ChatColor.BLUE + "Action removed.");
@@ -372,7 +372,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void setActionFrame(Player p, int actionIndex, int frame) {
+    public void setActionFrame(Player p, int actionIndex, int frame) {
         try {
             AnimationAction a = actions.get(actionIndex);
             a.setFrame(frame);
@@ -382,7 +382,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void listAvailableSounds(Player p) {
+    public void listAvailableSounds(Player p) {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "---------------------------");
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Available Sound constants:");
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "---------------------------");
@@ -394,7 +394,7 @@ public class AnimationFactory {
         p.sendMessage(ChatColor.AQUA + sounds);
     }
 
-    public static void setActionSound(Player p, int actionIndex, String soundName, double radius) {
+    public void setActionSound(Player p, int actionIndex, String soundName, double radius) {
         try {
             AnimationAction a = actions.get(actionIndex);
             if (a instanceof PlaySoundAction) {
@@ -417,7 +417,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void setActionTarget(Player p, int actionIndex, String target) {
+    public void setActionTarget(Player p, int actionIndex, String target) {
         try {
             AnimationAction a = actions.get(actionIndex);
             if (a instanceof ChainAnimationAction) {
@@ -431,7 +431,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void newTrigger(Player p, String triggerType) {
+    public void newTrigger(Player p, String triggerType) {
         AnimationTrigger t = null;
         if (triggerType.equals("always-active")) {
             t = new AlwaysActiveTrigger(null);
@@ -453,7 +453,7 @@ public class AnimationFactory {
         p.sendMessage(ChatColor.BLUE + t.toString() + " created at index #" + String.valueOf(triggers.size() - 1));
     }
 
-    public static void deleteTrigger(Player p, int index) {
+    public void deleteTrigger(Player p, int index) {
         try {
             triggers.remove(index);
             p.sendMessage(ChatColor.BLUE + "Trigger removed.");
@@ -462,7 +462,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void setTriggerFrame(Player p, int triggerIndex, int frame) {
+    public void setTriggerFrame(Player p, int triggerIndex, int frame) {
         try {
             AnimationTrigger t = triggers.get(triggerIndex);
             t.setFrame(frame);
@@ -472,7 +472,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void setPlayerChatTrigger(Player p, int triggerIndex, String message, double distance) {
+    public void setPlayerChatTrigger(Player p, int triggerIndex, String message, double distance) {
         try {
             AnimationTrigger t = triggers.get(triggerIndex);
             if (!(t instanceof PlayerChatTrigger)) {
@@ -491,7 +491,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void setBlocksTrigger(Player p, int triggerIndex) {
+    public void setBlocksTrigger(Player p, int triggerIndex) {
         try {
             AnimationTrigger t = triggers.get(triggerIndex);
             if (!(t instanceof BlockInteractTrigger)) {
@@ -531,7 +531,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void listClips(Player p) {
+    public void listClips(Player p) {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Currently stored clips:");
         for (MCMEClipboardStore cs : clips) {
             if (cs.getUses() != 0) {
@@ -542,13 +542,13 @@ public class AnimationFactory {
         }
     }
 
-    public static void newFrame(Player p) {
+    public void newFrame(Player p) {
         MCMEFrameBuilder fb = new MCMEFrameBuilder();
         frames.add(fb);
         p.sendMessage(ChatColor.BLUE + "New frame created.");
     }
 
-    public static void insertFrame(Player p, int index) {
+    public void insertFrame(Player p, int index) {
         try {
             MCMEFrameBuilder fb = new MCMEFrameBuilder();
             frames.add(index, fb);
@@ -558,7 +558,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void setFrameDuration(Player p, int index, int duration) {
+    public void setFrameDuration(Player p, int index, int duration) {
         try {
             MCMEFrameBuilder f = frames.get(index);
             f.setDuration(duration);
@@ -568,7 +568,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void setFrameClipboard(Player p, int index, String clipName) {
+    public void setFrameClipboard(Player p, int index, String clipName) {
         MCMEClipboardStore theClip = null;
         for (MCMEClipboardStore cs : clips) {
             if (cs.getSchematicName().equals(clipName)) {
@@ -593,7 +593,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void deleteFrame(Player p, int index) {
+    public void deleteFrame(Player p, int index) {
         try {
             MCMEFrameBuilder f = frames.remove(index);
             if (f.getSchematic() != null) {
@@ -605,7 +605,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void listFrames(Player p) {
+    public void listFrames(Player p) {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "Currently stored frames:");
         for (int i = 0; i < frames.size(); i++) {
             MCMEFrameBuilder fb = frames.get(i);
@@ -613,7 +613,7 @@ public class AnimationFactory {
         }
     }
 
-    public static void setAnimationOrigin(Player p) {
+    public void setAnimationOrigin(Player p) {
         Selection s = MCMEAnimations.WEPlugin.getSelection(p);
         if (!s.getMinimumPoint().equals(s.getMaximumPoint())) {
             p.sendMessage(ChatColor.RED + "More than one block selected! Select a single block in order to set the Animation origin");
@@ -623,7 +623,7 @@ public class AnimationFactory {
         p.sendMessage(ChatColor.BLUE + "Animation origin point set to X:" + origin.getX() + " Y:" + origin.getY() + " Z:" + origin.getZ());
     }
 
-    public static void setAnimationType(Player p, String animType) {
+    public void setAnimationType(Player p, String animType) {
         if (animType.equalsIgnoreCase("one-time")) {
             type = animationType.ONE_TIME_ANIMATION;
         } else if (animType.equalsIgnoreCase("two-way")) {
@@ -637,7 +637,7 @@ public class AnimationFactory {
         p.sendMessage(ChatColor.BLUE + "Animation type set to " + animType);
     }
 
-    public static void setAnimationName(Player p, String name) {
+    public void setAnimationName(Player p, String name) {
         if (name.trim().contains(" ")) {
             p.sendMessage(ChatColor.RED + "Animation name should not contain any space!");
             return;
@@ -646,7 +646,7 @@ public class AnimationFactory {
         p.sendMessage(ChatColor.BLUE + "Animation name set to " + name);
     }
 
-    public static void setAnimationDescription(Player p, String[] allArguments) {
+    public void setAnimationDescription(Player p, String[] allArguments) {
         if (allArguments.length > 1) {
             String des = "";
             for (int i = 1; i < allArguments.length; i++) {
@@ -660,7 +660,7 @@ public class AnimationFactory {
         }
     }
 
-    public static boolean saveAnimationData(Player p) {
+    public boolean saveAnimationData(Player p) {
         //Perform Animation integrity checks
         if (animationName.trim().isEmpty()) {
             p.sendMessage(ChatColor.RED + "Animation name has not been set. Use /anim name while in Animation setup mode to set up the animation name");
@@ -765,7 +765,7 @@ public class AnimationFactory {
         return true;
     }
 
-    public static void animationInfo(Player p) {
+    public void animationInfo(Player p) {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "----==== CURRENT ANIMATION INFO ===---");
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "Owner:" + ChatColor.RESET + "" + ChatColor.AQUA + owner.getDisplayName());
         p.sendMessage(ChatColor.AQUA + "" + ChatColor.BOLD + "Name:" + ChatColor.RESET + "" + ChatColor.AQUA + animationName);
@@ -781,7 +781,7 @@ public class AnimationFactory {
         p.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD + "----===============================---");
     }
 
-    private static void saveClipboardToFile(CuboidClipboard clip, String name, File animationFolder) {
+    private void saveClipboardToFile(CuboidClipboard clip, String name, File animationFolder) {
         SchematicFormat sf = SchematicFormat.MCEDIT;
         try {
             File data = new File(animationFolder + File.separator + name + ".schematic");
@@ -794,7 +794,7 @@ public class AnimationFactory {
     }
 
     //UTILITIES
-    private static LocalWorld worldToLocalWorld(World w) {
+    private LocalWorld worldToLocalWorld(World w) {
         String name = w.getName();
         for (LocalWorld lw : MCMEAnimations.WEPlugin.getServerInterface().getWorlds()) {
             if (lw.getName().equals(name)) {
@@ -805,7 +805,7 @@ public class AnimationFactory {
     }
 
     //RECURSIVE FILE DELETION
-    public static void delete(File file) throws IOException {
+    public void delete(File file) throws IOException {
 
         if (file.isDirectory()) {
             //directory is empty, then delete it
